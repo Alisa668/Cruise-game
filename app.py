@@ -1,7 +1,18 @@
 import streamlit as st
 import random
 
+# Force single uniform academic font family and consistent styling globally via CSS injection
 st.set_page_config(page_title="Cruise Monopoly System", layout="wide")
+st.markdown("""
+    <style>
+    html, body, [data-testid="stMarkdownContainer"], p, span, div, h1, h2, h3 {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+    }
+    .stAlert {
+        border-radius: 4px !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 if 'game_state' not in st.session_state:
     st.session_state.game_state = {
@@ -75,7 +86,7 @@ elif 1 <= s['phase'] <= 3:
                     "title": "🚨 WEATHER: Severe Storm Path Entry", 
                     "desc": "A category 5 hurricane blocks your direct track line.", 
                     "h": "Hurricane Dorian (2019). Western markets handle sea rolling well. Asian markets expect safety-first protocols.", 
-                    "img_url": "https://rawpixel.com", 
+                    "emoji": "⛈️ 🌊 🌪️", # 100% stable local graphic vector fallback
                     "o1": "Choice 1: [Option 1] Safety Protocol: Execute regional detour. (0 casualties, fuel spikes -$6,000)", 
                     "o2": "Choice 2: [Option 2] Schedule Lock: Run ahead of the wind at max speed. (Saves cash, but 85 pax slip injuries. On Asian routes, lost retail costs an extra -$2,000)", 
                     "m1": -6000, "i1": 0, "d1": 0, "m2": -4000 if is_asian else -2000, "i2": 85, "d2": 0
@@ -84,7 +95,7 @@ elif 1 <= s['phase'] <= 3:
                     "title": "🚨 MEDICAL: Onboard Norovirus Gastro Epidemic", 
                     "desc": "A contagious gastrointestinal virus breaks loose within the main dining layout sections.", 
                     "h": "Oasis of the Seas (2019). Western guests demand heavy bar compensations if locked down. Asian routes feature older families vulnerable to fatalities if ignored.", 
-                    "img_url": "https://rawpixel.com", 
+                    "emoji": "🏥 🤢 💊", # 100% stable local graphic vector fallback
                     "o1": "Choice 1: [Option 1] Isolate Vessel: Mandatory in-cabin quarantine. (120 sick pax, 0 deaths. Western complaints cost -$20,000; Asian collectivism costs -$12,000)", 
                     "o2": "Choice 2: [Option 2] Maintain Operations: Keep spaces open to save retail revenue. (450 pax infected. Asian multi-generational densities trigger 4 high-risk elderly deaths and -$35,000 fine; Western costs -$22,000)", 
                     "m1": -12000 if is_asian else -20000, "i1": 120, "d1": 0, "m2": -35000 if is_asian else -22000, "i2": 450, "d2": 4 if is_asian else 1
@@ -93,14 +104,13 @@ elif 1 <= s['phase'] <= 3:
                     "title": "🌟 STRATEGIC OPPORTUNITY: High-Margin Premium Charter Proposal", 
                     "desc": "A luxury retail conglomerate requests to lease your public decks tonight for a VIP shopping gala.", 
                     "h": "Corporate charter data. Asian cruise markets generate much higher profit margins from duty-free luxury spending compared to Western casual vacationers.", 
-                    "img_url": "https://rawpixel.com", 
+                    "emoji": "💎 💰 🎰", # 100% stable local graphic vector fallback
                     "o1": "Choice 1: [Option 1] Commercial Deal: Accept VIP contract. (Asian routes trigger shopping surge of +$35,000; Western routes generate +$20,000)", 
                     "o2": "Choice 2: [Option 2] Consumer Protection: Decline contract to keep public walking spaces open. (Yields $0 cash injection)", 
                     "m1": 35000 if is_asian else 20000, "i1": 0, "d1": 0, "m2": 0, "i2": 0, "d2": 0
                 }
             ]
             
-            # Repaired index tracking
             g_num_val = 1
             if "2" in s['group']: g_num_val = 2
             elif "3" in s['group']: g_num_val = 3
@@ -115,9 +125,12 @@ elif 1 <= s['phase'] <= 3:
             random.shuffle(shuffled_cards)
             c = shuffled_cards[s['phase'] - 1]
             
-            # Master Layout Board
+            # Render Incident Details
             st.markdown(f"## 📋 {c['title']}")
-            st.image(c['img_url'], width=450, caption="Operations Visual Map Indicator")
+            
+            # Visual Graphic Box Component (Guaranteed 100% display rate under school networks)
+            st.markdown(f"<div style='font-size: 80px; text-align: left; padding: 10px 0;'>{c['emoji']}</div>", unsafe_allow_html=True)
+            
             st.markdown(f"🌍 **Target Market Profile:** **`{s['market']}`**")
             st.write(f"💬 **Current Incident Vector:** {c['desc']}")
             st.caption(f"📌 *Benchmark Case Study: {c['h']}*")
@@ -131,7 +144,3 @@ elif 1 <= s['phase'] <= 3:
             col_b1, col_b2 = st.columns(2)
             if col_b1.button("🔴 Choose Option 1", use_container_width=True):
                 s['cash'] += c['m1']; s['injured'] += c['i1']; s['dead'] += c['d1']
-                s['history'].append(f"Phase {s['phase']} - Option 1 Selected | Cash: ${c['m1']:,} | Sick/Injured: +{c['i1']} | Deaths: +{c['d1']}")
-                s['phase'] += 1; s['dice_rolled'] = False; st.rerun()
-            if col_b2.button("🔵 Choose Option 2", use_container_width=True):
-                s['cash'] += c['m2']; s['injured'] += c['i2']; s['dead'] += c['d2']
