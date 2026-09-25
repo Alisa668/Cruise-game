@@ -40,9 +40,18 @@ if st.session_state.phase == 0:
     st.info("💡 Your ship setup is auto-locked based on your Group Number to prevent copying!")
     
     group_choice = st.selectbox("Select Your Group Number (1-8):", ["Group 1", "Group 2", "Group 3", "Group 4", "Group 5", "Group 6", "Group 7", "Group 8"])
-    g_idx = int(group_choice.split(" ")) - 1
     
-    ships = ["Starry Empress (Luxury Ship)", "Oceanic Voyager (Family Holiday Ship)", "Royal Sovereign (Mega-Resort Ship)", "Genting Splendor (Asian Style Resort Ship)", "Coral Majestic (Small Exploration Ship)", "Horizon Dragon (Hong Kong Premium Yacht)", "Atlantic Crown (Classic Ocean Liner)", "Pacific Pacific (Singapore Active Holiday Ship)"]
+    # 100% safe conditional index mapping to bypass python type conversion errors
+    g_idx = 0
+    if "2" in group_choice: g_idx = 1
+    elif "3" in group_choice: g_idx = 2
+    elif "4" in group_choice: g_idx = 3
+    elif "5" in group_choice: g_idx = 4
+    elif "6" in group_choice: g_idx = 5
+    elif "7" in group_choice: g_idx = 6
+    elif "8" in group_choice: g_idx = 7
+    
+    ships = ["Starry Empress (Luxury Ship)", "Oceanic Voyager (Family Holiday Ship)", "Royal Sovereign (Mega-Resort Ship)", "Genting Splendor (Asian Style Resort Ship)", "Coral Majestic (Small Exploration Ship)", "Horizon Dragon (Hong Kong Premium Yacht)", "Atlantic Crown (Classic Ocean Liner)", "Pacific Pacific (Singapore Expedition)"]
     durations = ["12-Day Mediterranean Trip", "14-Day Caribbean Holiday", "16-Day Long Ocean Crossing", "18-Day Southeast Asia Trip", "21-Day Long Cruise Route", "24-Day Big Asia Transit", "27-Day Coastline Tour", "29-Day Deep Wilderness Expedition"]
     themes = ["Gourmet Food & Spa Focus", "High-Energy Sports & Deck Parties", "History, Local Culture & Sightseeing", "Asian Michelin Dim Sum Food Tour", "Business Meetings & Tech Networking", "Lunar New Year Festival Cruise", "Big Family Vacation & Kids Activities", "Diving, Coral Reefs & Sea Nature"]
     routes = ["Miami ➔ Cozumel (Western Caribbean)", "Seattle ➔ Juneau (Alaskan Passage)", "Barcelona ➔ Marseille (Western Mediterranean)", "Singapore ➔ Phuket (Southeast Asian)", "Sydney ➔ Auckland (Tasman Crossing)", "Hong Kong ➔ Okinawa (East China Sea)", "Copenhagen ➔ Helsinki (Baltic Heritage)", "Yokohama ➔ Keelung (North Asia Island)"]
@@ -83,7 +92,8 @@ if st.session_state.phase == 0:
 
 # --- STEP 2: CRISIS MANAGEMENT ENGINE ROUNDS ---
 elif 1 <= st.session_state.phase <= 3:
-    st.markdown(f"### 📊 Dashboard Status | {st.session_state.history[0].split(' (')[0].replace('🚢 ', '')}")
+    # Live Colored Metric Dashboard
+    st.markdown("### 📊 Dashboard Status")
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("💰 Money left", f"${st.session_state.cash:,}")
     c2.metric("👥 Onboard Passengers", f"{st.session_state.passengers:,} Pax")
@@ -95,13 +105,15 @@ elif 1 <= st.session_state.phase <= 3:
     
     with col_left:
         st.subheader(f"🎲 Step {st.session_state.phase} / 3 Rounds")
-        is_asian = "ASIAN" in st.session_state.history[3]
+        
+        # Check market data safely from history dump
+        history_summary = "\n".join(st.session_state.history)
+        is_asian = "ASIAN" in history_summary
         
         CARDS = [
             {"title": "BAD WEATHER: Big Storm Coming", "desc": "A dangerous Category 5 hurricane blocks your ship's direct route.", "h": "Hurricane Dorian (2019). Western bars/casinos remain highly profitable. Asian markets exhibit a strict collectivist safety expectation.", "emoji": "⛈️ 🌊 🌪️", "o1": "Choice 1: [Option 1] Safety Detour around storm. (0 hurt, fuel spikes -$6,000)", "o2": "Choice 2: [Option 2] Save Fuel money and run at full speed. (85 fallback injuries. Asian retail boycotts cost an extra -$2,000)" if is_asian else "Choice 2: [Option 2] Save Fuel money and run at full speed. (85 fallback injuries, -$2,000 medical lawsuit fees)", "m1": -6000, "i1": 0, "d1": 0, "m2": -4000 if is_asian else -2000, "i2": 85, "d2": 0},
             {"title": "MEDICAL EMERGENCY: Sickness Outbreak on Board", "desc": "A contagious gastrointestinal virus spreads rapidly inside buffet dining rooms.", "h": "Oasis of the Seas (2019). Western cabins reject quarantine locks. Asian generational densities spark severe fatalities if ignored.", "emoji": "🏥 🤢 💊", "o1": "Choice 1: [Option 1] Force in-cabin quarantine. (120 sick, 0 deaths. Western refunds cost -$20,000; Asian lines cooperate at -$12,000)", "o2": "Choice 2: [Option 2] Keep theater/public spaces open. (450 sick. Asian family structures report 4 elderly deaths, -$35,000 fine; Western costs -$22,000)", "m1": -12000 if is_asian else -20000, "i1": 120, "d1": 0, "m2": -35000 if is_asian else -22000, "i2": 450, "d2": 4 if is_asian else 1},
-            {"title": "BIG BUSINESS OPPORTUNITY: Shopping Gala Offer", "desc": "A luxury retail company requests to lease public decks tonight for a VIP shopping party.", "h": "Fleet Charter data. Asian routes generate massive net auxiliary margins from duty-free luxury spending over casual Western itineraries.", "emoji": "💎 💰 🎰", "o1": "Choice 1: [Option 1] Accept VIP contract. (Asian shopping surges net revenues by +$35,000; Western assets capture +$20,000)", "o2": "Choice 2: [Option 2] Decline deal to keep public transit spaces free. (Yields $0 cash injection)", "m1": 35000 if is_asian else 20000, "i1": 0, "d1": 0, "m2": 0, "i2": 0, "d2": 0
-                }
+            {"title": "BIG BUSINESS OPPORTUNITY: Shopping Gala Offer", "desc": "A luxury retail company requests to lease public decks tonight for a VIP shopping party.", "h": "Fleet Charter data. Asian routes generate massive net auxiliary margins from luxury spending over casual Western itineraries.", "emoji": "💎 💰 🎰", "o1": "Choice 1: [Option 1] Accept VIP contract. (Asian shopping surges net revenues by +$35,000; Western assets capture +$20,000)", "o2": "Choice 2: [Option 2] Decline deal to keep public transit spaces free. (Yields $0 cash injection)", "m1": 35000 if is_asian else 20000, "i1": 0, "d1": 0, "m2": 0, "i2": 0, "d2": 0}
         ]
         
         c = CARDS[st.session_state.phase - 1]
@@ -113,12 +125,3 @@ elif 1 <= st.session_state.phase <= 3:
         
         st.subheader("Review Options & Cast Your Boardroom Vote:")
         
-        # Two large, clear individual review panels with consistent typography wrapper
-        st.info(f"🔴 **{c['o1']}**")
-        st.info(f"🔵 **{c['o2']}**")
-        st.write("")
-        
-        # Click buttons to toggle selection highlight
-        b1, b2 = st.columns(2)
-        if b1.button("👉 Select Option 1", use_container_width=True):
-            st.session_state.user_selection = "1"
