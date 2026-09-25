@@ -1,22 +1,10 @@
 import streamlit as st
 import random
 
-# Global CSS: Force unified clean typography and wide screen framework
 st.set_page_config(page_title="Cruise Board Game", layout="wide")
-st.markdown("""
-    <style>
-    html, body, [data-testid="stMarkdownContainer"], p, span, div, h1, h2, h3 {
-        font-family: 'Arial', sans-serif !important;
-    }
-    .stAlert {
-        border-radius: 4px !important;
-        padding: 12px !important;
-        margin-bottom: 12px !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
 
-# Initialize master boardroom state track parameters
+st.markdown("<style>html,body,[data-testid='stMarkdownContainer'],p,span,div,h1,h2,h3{font-family:'Arial',sans-serif !important;}.stAlert{border-radius:4px !important;padding:12px !important;margin-bottom:12px !important;}</style>", unsafe_allow_html=True)
+
 if 'phase' not in st.session_state: st.session_state.phase = 0
 if 'group' not in st.session_state: st.session_state.group = ""
 if 'brand' not in st.session_state: st.session_state.brand = ""
@@ -31,7 +19,6 @@ if 'dead' not in st.session_state: st.session_state.dead = 0
 if 'chosen_logs' not in st.session_state: st.session_state.chosen_logs = []
 if 'v_id' not in st.session_state: st.session_state.v_id = "VESS-G" + str(random.randint(11,99)) + "-" + str(random.randint(100,999))
 
-# Configuration Database mapping for all 8 Corporate Groups
 GROUP_DATA = {
     "Group 1": {"brand": "Starry Empress", "duration": "12-Day Mediterranean Trip", "theme": "Gourmet Food & Spa Focus", "market": "WESTERN", "map": "USA Miami -> Sailing Caribbean Sea -> Mexico Cozumel"},
     "Group 2": {"brand": "Oceanic Voyager", "duration": "14-Day Caribbean Holiday", "theme": "High-Energy Sports & Deck Parties", "market": "WESTERN", "map": "USA Seattle -> Sailing Gulf of Alaska -> USA Juneau"},
@@ -43,20 +30,17 @@ GROUP_DATA = {
     "Group 8": {"brand": "Pacific Pacific", "duration": "29-Day Deep Wilderness Expedition", "theme": "Diving, Coral Reefs & Sea Nature", "market": "ASIAN", "map": "Japan Yokohama -> Sailing North Pacific -> Taiwan Keelung"}
 }
 
-# --- PHASE 0: INITIAL GROUP REGISTRATION FRONT PAGE ---
+# --- STAGE 0: SETUP HUB ---
 if st.session_state.phase == 0:
     st.header("Step 1: Choose Your Group Number")
     group_choice = st.selectbox("Select Your Group Number (1-8):", list(GROUP_DATA.keys()))
     cfg = GROUP_DATA[group_choice]
-    
     st.write("### Your Auto-Locked Ship Details:")
-    c1, c2 = st.columns(2)
-    c1.text_input("Group Assignment Name:", value=group_choice, disabled=True)
-    c1.text_input("Cruise Name:", value=f"{cfg['brand']} ({group_choice})", disabled=True)
-    c1.text_input("Cruise Theme Focus:", value=cfg['theme'], disabled=True)
-    c2.text_input("Demographic Profile:", value=cfg['market'] + " Market", disabled=True)
-    c2.text_input("Cruise Itinerary Route Map:", value=cfg['map'], disabled=True)
-    
+    st.text_input("Group Assignment Name:", value=group_choice, disabled=True)
+    st.text_input("Cruise Name:", value=f"{cfg['brand']} ({group_choice})", disabled=True)
+    st.text_input("Cruise Theme Focus:", value=cfg['theme'], disabled=True)
+    st.text_input("Demographic Profile:", value=cfg['market'] + " Market", disabled=True)
+    st.text_input("Cruise Itinerary Route Map:", value=cfg['map'], disabled=True)
     if st.button("Confirm Setup - Start the Cruise Now", type="primary", use_container_width=True):
         st.session_state.group = group_choice
         st.session_state.brand = f"{cfg['brand']} ({group_choice})"
@@ -67,14 +51,14 @@ if st.session_state.phase == 0:
         st.session_state.phase = 1
         st.rerun()
 
-# --- PHASE 1 - 5: BOARDROOM INTERACTIVE SCENARIOS ---
-elif 1 <= st.session_state.phase <= 5:
+# --- STAGE 1 TO 5: MAIN CORE ROUNDS PLATFORM ---
+if st.session_state.phase >= 1 and st.session_state.phase <= 5:
     st.markdown(f"### Scoreboard | {st.session_state.group} Active Profile")
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Money left", f"${st.session_state.cash:,}")
-    c2.metric("Onboard Passengers", f"{st.session_state.passengers:,} Pax")
-    c3.metric("Sick/Injured", f"{st.session_state.injured} Sick")
-    c4.metric("Deaths", f"{st.session_state.dead} Dead")
+    sc1, sc2, sc3, sc4 = st.columns(4)
+    sc1.metric("Money left", f"${st.session_state.cash:,}")
+    sc2.metric("Onboard Passengers", f"{st.session_state.passengers:,} Pax")
+    sc3.metric("Sick/Injured", f"{st.session_state.injured} Sick")
+    sc4.metric("Deaths", f"{st.session_state.dead} Dead")
     st.write("---")
     
     col_left, col_right = st.columns(2)
@@ -83,7 +67,7 @@ elif 1 <= st.session_state.phase <= 5:
         st.subheader(f"Round {st.session_state.phase} / 5")
         is_asian = st.session_state.market == "ASIAN"
         
-        # Static matrix assignment to bypass dynamic formatting crashes entirely
+        # Scenario 1 Assets Matrix
         if st.session_state.phase == 1:
             title = "BAD WEATHER: Big Storm Coming"
             desc = "A dangerous Category 5 hurricane blocks your ship's direct route."
@@ -95,7 +79,8 @@ elif 1 <= st.session_state.phase <= 5:
             i2_val = 140 if is_asian else 155
             d2_val = 0 if is_asian else 1
             
-        elif st.session_state.phase == 2:
+        # Scenario 2 Assets Matrix
+        if st.session_state.phase == 2:
             title = "MEDICAL EMERGENCY: Sickness Outbreak on Board"
             desc = "A contagious gastrointestinal virus spreads rapidly inside buffet dining rooms."
             emoji = "[MEDICAL]"
@@ -108,7 +93,8 @@ elif 1 <= st.session_state.phase <= 5:
             i2_val = 420 if is_asian else 310
             d2_val = 5 if is_asian else 2
             
-        elif st.session_state.phase == 3:
+        # Scenario 3 Assets Matrix
+        if st.session_state.phase == 3:
             title = "BIG BUSINESS OPPORTUNITY: Shopping Gala Offer"
             desc = "A luxury retail company requests to lease public decks tonight for a VIP shopping party."
             emoji = "[RETAIL]"
@@ -119,7 +105,8 @@ elif 1 <= st.session_state.phase <= 5:
             d1_val = 0
             m2_val, i2_val, d2_val = 4000, 0, 0
 
-        elif st.session_state.phase == 4:
+        # Scenario 4 Assets Matrix
+        if st.session_state.phase == 4:
             title = "ENVIRONMENTAL CRISIS: Deep Sea Oil Leakage Risk"
             desc = "Engineers notice minor fuel oil leakage near a marine sanctuary zone. Repair requires pausing the voyage."
             emoji = "[ECO_RISK]"
@@ -130,7 +117,8 @@ elif 1 <= st.session_state.phase <= 5:
             i2_val = 90 if is_asian else 110
             d2_val = 0 if is_asian else 3
 
-        else:
+        # Scenario 5 Assets Matrix
+        if st.session_state.phase == 5:
             title = "BOARDROOM SCANDAL: VIP Casino Fraud Accusation"
             desc = "A high-net-worth VIP whale accuses your ship dealers of running rigged card decks."
             emoji = "[SCANDAL]"
@@ -142,7 +130,6 @@ elif 1 <= st.session_state.phase <= 5:
             i2_val = 130 if is_asian else 45
             d2_val = 1 if is_asian else 2
 
-        # Display situational details clearly
         st.markdown(f"### {emoji} {title}")
         st.write(f"Situation Overview: {desc}")
         st.write("---")
@@ -150,9 +137,15 @@ elif 1 <= st.session_state.phase <= 5:
         st.info(f"Option 1: {o1_text}")
         st.info(f"Option 2: {o2_text}")
         
-        # Consolidated standard ballot submission container
-        with st.form(key=f"ballot_submission_form_ph_{st.session_state.phase}"):
-            user_choice = st.radio("Select your choice:", ["Option 1", "Option 2"], key=f"user_radio_select_{st.session_state.phase}")
-            confirm_btn = st.form_submit_button("Confirm the decision and run it", type="primary", use_container_width=True)
+        # Pure global radio element with no form constraints to bypass indentation problems completely
+        user_choice = st.radio("Select your choice:", ["Option 1", "Option 2"], key=f"user_radio_select_{st.session_state.phase}")
+        st.write("---")
+        
+        if st.button("Confirm the decision and run it", type="primary", use_container_width=True, key=f"run_btn_{st.session_state.phase}"):
+            is_opt1 = "Option 1" in user_choice
+            final_cost = m1_val if is_opt1 else m2_val
+            final_injury = i1_val if is_opt1 else i2_val
+            final_death = d1_val if is_opt1 else d2_val
+            final_desc = o1_text if is_opt1 else o2_text
             
-            if confirm_btn:
+            st.session_state.cash += final_cost
