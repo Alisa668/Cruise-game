@@ -2,7 +2,7 @@ import streamlit as st
 import random
 
 # Global Wide Screen Page Configuration
-st.set_page_config(page_title="Loss or Gain Simulation", layout="wide")
+st.set_page_config(page_title="The Cruise Captain Simulation", layout="wide")
 
 # Initialize master state properties sequentially to protect cache
 if 'phase' not in st.session_state: st.session_state.phase = 0
@@ -30,70 +30,70 @@ GROUP_DATA = {
     "Group 8": {"brand": "Pacific Pacific", "duration": "29-Day Deep Wilderness Expedition", "theme": "Diving, Coral Reefs & Sea Nature", "market": "ASIAN Market Segment", "map": "Yokohama (Japan) to Keelung (Taiwan)"}
 }
 
-# --- MATRIX DATA ENGINE: RE-BALANCED BALANCED CASUALTY RISK VALUES ---
+# --- MATRIX DATA ENGINE: RE-BALANCED CLOSE-MARGIN FINANCIAL STRATEGIES ---
 # Data layout format map: [Title, Topic Keyword, M1, i1, d1, M2, i2, d2]
 DB = {
     "Group 1": [
         ["WEATHER HAZARD: Hurricane Dorian Interception", "Hurricane Dorian Bypass", -45000, 15, 1, -5000, 290, 2],
         ["CONTAGION ALERT: Aggressive Buffet Norovirus Outbreak", "Norovirus Isolation Plan", -38000, 45, 1, -8000, 340, 2],
-        ["COMMERCIAL REVENUE DEED: Luxury Brand Shopping Gala", "Atrium Luxury Retail Lease", 25000, 0, 0, 42000, 0, 0],
-        ["HIGH-YIELD REVENUE OPPORTUNITY: Duty-Free Champagne Lounge Sponsorship", "Duty-Free Sponsorship Offer", 35000, 0, 0, 20000, 0, 0],
-        ["MARKET COMMERCE OPPORTUNITY: Premium Spa Package Launch", "Specialty Spa Upsell Event", 30000, 0, 0, 15000, 0, 0]
+        ["COMMERCIAL REVENUE DEED: Luxury Brand Shopping Gala", "Atrium Luxury Retail Lease", 38000, 0, 0, 42000, 0, 0],
+        ["HIGH-YIELD REVENUE OPPORTUNITY: Duty-Free Champagne Lounge Sponsorship", "Duty-Free Sponsorship Offer", 35000, 0, 0, 31000, 0, 0],
+        ["MARKET COMMERCE OPPORTUNITY: Premium Spa Package Launch", "Specialty Spa Upsell Event", 30000, 0, 0, 27000, 0, 0]
     ],
     "Group 2": [
         ["ENVIRONMENTAL RISK: Glacier Bay Whale Sanctuary Speed Cap", "Whale Protection Tracking", -39000, 12, 1, -12000, 95, 2],
         ["ENGINEERING EXTREME: Auxiliary Stabilizer Hydrolock Failure", "Stabilizer System Repair", -42000, 15, 1, -11000, 310, 2],
-        ["COMMERCIAL REVENUE DEED: Aqua Park Extreme Sports Deck Tournament", "Sports Deck Championship Title", 22000, 0, 0, 40000, 0, 0],
-        ["HIGH-YIELD REVENUE OPPORTUNITY: Energy Drink Co-Branded Deck Party", "Deck Party Brand Association", 30000, 0, 0, 15000, 0, 0],
-        ["MARKET COMMERCE OPPORTUNITY: VIP Casino Live Poker Tournament Broadcast", "Premium Casino Media Event", 38000, 0, 0, 25000, 0, 0]
+        ["COMMERCIAL REVENUE DEED: Aqua Park Extreme Sports Deck Tournament", "Sports Deck Championship Title", 36000, 0, 0, 40000, 0, 0],
+        ["HIGH-YIELD REVENUE OPPORTUNITY: Energy Drink Co-Branded Deck Party", "Deck Party Brand Association", 30000, 0, 0, 26000, 0, 0],
+        ["MARKET COMMERCE OPPORTUNITY: VIP Casino Live Poker Tournament Broadcast", "Premium Casino Media Event", 38000, 0, 0, 34000, 0, 0]
     ],
     "Group 3": [
         ["LABOR UNREST: Marseille Tugboat Association Strike", "Tugboat Labor Union Strike", -44000, 14, 1, -7000, 220, 2],
         ["ECOLOGICAL CRISIS: Seagrass Marine Park Anchor Damage", "Anchor Seagrass Code Fine", -40000, 11, 1, -15000, 185, 2],
-        ["COMMERCIAL REVENUE DEED: Elite Fine-Art Gallery Auction Event", "Historical Art Auction Gala", 28000, 0, 0, 45000, 0, 0],
-        ["HIGH-YIELD REVENUE OPPORTUNITY: Premium Local Vineyard Wine Tasting Festival", "Mediterranean Wine Tasting Expo", 32000, 0, 0, 18000, 0, 0],
-        ["MARKET COMMERCE OPPORTUNITY: Luxury Shore Excursion Private Jet Upgrade", "Exclusive VIP Tour Packages Addon", 35000, 0, 0, 20000, 0, 0]
+        ["COMMERCIAL REVENUE DEED: Elite Fine-Art Gallery Auction Event", "Historical Art Auction Gala", 41000, 0, 0, 45000, 0, 0],
+        ["HIGH-YIELD REVENUE OPPORTUNITY: Premium Local Vineyard Wine Tasting Festival", "Mediterranean Wine Tasting Expo", 32000, 0, 0, 29000, 0, 0],
+        ["MARKET COMMERCE OPPORTUNITY: Luxury Shore Excursion Private Jet Upgrade", "Exclusive VIP Tour Packages Addon", 35000, 0, 0, 31000, 0, 0]
     ],
     "Group 4": [
         ["WEATHER HAZARD: Southwest Monsoon Offshore Swell Disruptions", "Monsoon Swell Navigation", -45000, 12, 1, -12000, 280, 2],
         ["CONTAGION ALERT: Premium Asian Kitchen Seafood Poisoning", "Seafood Contagion Quarantine", -38000, 30, 1, -10000, 390, 3],
-        ["COMMERCIAL REVENUE DEED: Michelin Dim Sum Master Brand Partnership", "Michelin Dim Sum Pop-Up Restaurant", 24000, 0, 0, 43000, 0, 0],
-        ["HIGH-YIELD REVENUE OPPORTUNITY: Bird's Nest & Abalone Luxury Dinner Upsell", "Premium Seafood Dining Banquet", 35000, 0, 0, 15000, 0, 0],
-        ["MARKET COMMERCE OPPORTUNITY: Traditional Chinese Wellness Herbs Expo", "Asian Holistic Health Fair", 28000, 0, 0, 22000, 0, 0]
+        ["COMMERCIAL REVENUE DEED: Michelin Dim Sum Master Brand Partnership", "Michelin Dim Sum Pop-Up Restaurant", 39000, 0, 0, 43000, 0, 0],
+        ["HIGH-YIELD REVENUE OPPORTUNITY: Bird's Nest & Abalone Luxury Dinner Upsell", "Premium Seafood Dining Banquet", 35000, 0, 0, 32000, 0, 0],
+        ["MARKET COMMERCE OPPORTUNITY: Traditional Chinese Wellness Herbs Expo", "Asian Holistic Health Fair", 28000, 0, 0, 25000, 0, 0]
     ],
     "Group 5": [
         ["ENGINEERING EXTREME: Tasman Sea Rogue Wave Structural Strut Hit", "Tasman Sea Rogue Wave Strut", -43000, 15, 1, -12000, 340, 3],
         ["OPERATIONAL COMPLIANCE: Great Barrier Reef Pilot Fine", "Barrier Reef Track Code Violation", -40000, 14, 1, -16000, 125, 2],
-        ["COMMERCIAL REVENUE DEED: Tech Enterprise Global Networking Forum", "Corporate Main Convention Space Lease", 30000, 0, 0, 45000, 0, 0],
-        ["HIGH-YIELD REVENUE OPPORTUNITY: Silicon Valley Venture Networking Dinner", "VIP Business Networking Banquet", 32000, 0, 0, 18000, 0, 0],
-        ["MARKET COMMERCE OPPORTUNITY: Extreme Outdoor Adventure Gear Pop-Up Showcase", "Premium Eco-Adventure Gear Store", 26000, 0, 0, 15000, 0, 0]
+        ["COMMERCIAL REVENUE DEED: Tech Enterprise Global Networking Forum", "Corporate Main Convention Space Lease", 42000, 0, 0, 45000, 0, 0],
+        ["HIGH-YIELD REVENUE OPPORTUNITY: Silicon Valley Venture Networking Dinner", "VIP Business Networking Banquet", 32000, 0, 0, 29000, 0, 0],
+        ["MARKET COMMERCE OPPORTUNITY: Extreme Outdoor Adventure Gear Pop-Up Showcase", "Premium Eco-Adventure Gear Store", 26000, 0, 0, 23000, 0, 0]
     ],
     "Group 6": [
-        ["WEATHER HAZARD: Typhoon In-fa Trajectory Shift", "Typhoon Wind Fields Detour", -46000, 11, 1, -15000, 320, 2],
+        ["WEATHER HAZARD: Typhoon In-fa Trajectory Shift", "Typhoon Wind Fields Encounter", -46000, 11, 1, -15000, 320, 2],
         ["AUDIT CRISIS: VIP High Roller Baccarat Blackmail Threat", "High Roller Gambling Blackmail Dispute", -38000, 12, 1, -14000, 210, 2],
-        ["COMMERCIAL REVENUE DEED: Lunar New Year Red Packet Gold Retail Festival", "Lunar New Year Red Packet Pop-Up", 25000, 0, 0, 44000, 0, 0],
-        ["HIGH-YIELD REVENUE OPPORTUNITY: High-End Hong Kong Jade Jewelry Private Private Sale", "Exclusive Luxury Jade Auction", 40000, 0, 0, 20000, 0, 0],
-        ["MARKET COMMERCE OPPORTUNITY: Michelin-Starred Lunar New Year Family Feast", "Festive Reunion Dining Package", 33000, 0, 0, 25000, 0, 0]
+        ["COMMERCIAL REVENUE DEED: Lunar New Year Red Packet Gold Retail Festival", "Lunar New Year Red Packet Pop-Up", 39000, 0, 0, 44000, 0, 0],
+        ["HIGH-YIELD REVENUE OPPORTUNITY: High-End Hong Kong Jade Jewelry Private Sale", "Exclusive Luxury Jade Auction", 40000, 0, 0, 37000, 0, 0],
+        ["MARKET COMMERCE OPPORTUNITY: Michelin-Starred Lunar New Year Family Feast", "Festive Reunion Dining Package", 33000, 0, 0, 29000, 0, 0]
     ],
     "Group 7": [
         ["GEOPOLITICAL MARITIME CHANGE: Baltic Naval Drill Restrictions", "Baltic Naval Drill detours", -42500, 13, 1, -12500, 130, 2],
         ["ENGINEERING EXTREME: Bow Thruster Internal Gear Jam", "Bow Thruster System Jam Repairs", -39500, 15, 1, -11000, 285, 2],
-        ["COMMERCIAL REVENUE DEED: Scandinavian Organic Wellness & Spa Residency", "Nordic Theme Thermal Spa Expansion", 20000, 0, 0, 38000, 0, 0],
-        ["HIGH-YIELD REVENUE OPPORTUNITY: Baltic Amber Fine Crafts & Souvenirs Exhibition", "Premium Regional Crafts Market", 28000, 0, 0, 14000, 0, 0],
-        ["MARKET COMMERCE OPPORTUNITY: Academic Alumni Association Guest Lecture Series", "Exclusive Group Educational Symposium", 30000, 0, 0, 15000, 0, 0]
+        ["COMMERCIAL REVENUE DEED: Scandinavian Organic Wellness & Spa Residency", "Nordic Theme Thermal Spa Expansion", 34000, 0, 0, 38000, 0, 0],
+        ["HIGH-YIELD REVENUE OPPORTUNITY: Baltic Amber Fine Crafts & Souvenirs Exhibition", "Premium Regional Crafts Market", 28000, 0, 0, 25000, 0, 0],
+        ["MARKET COMMERCE OPPORTUNITY: Academic Alumni Association Guest Lecture Series", "Exclusive Group Educational Symposium", 30000, 0, 0, 26000, 0, 0]
     ],
     "Group 8": [
         ["WEATHER HAZARD: North Pacific Rogue Wave Structural Impact", "Window Shattering Impact Structural Fix", -45000, 15, 1, -9000, 350, 4],
         ["ECOLOGICAL CRISIS: Protected Coral Reef Anchor Drag Fine", "Anchor Drag Reef Fine Assessment", -41000, 12, 1, -18000, 95, 2],
-        ["COMMERCIAL REVENUE DEED: Marine Nature Diving Photography Expo", "Wildlife Deep Sea Expedition Gallery", 22000, 0, 0, 36000, 0, 0],
-        ["HIGH-YIELD REVENUE OPPORTUNITY: Premium Marine Equipment Private Auction", "High-End Diving Equipment Retail Event", 31000, 0, 0, 17000, 0, 0],
-        ["MARKET COMMERCE OPPORTUNITY: Eco-Tourism Coral Reef Preservation Charity Dinner", "Premium Ecological Gala Dinner", 35000, 0, 0, 20000, 0, 0]
+        ["COMMERCIAL REVENUE DEED: Marine Nature Diving Photography Expo", "Wildlife Deep Sea Expedition Gallery", 32000, 0, 0, 36000, 0, 0],
+        ["HIGH-YIELD REVENUE OPPORTUNITY: Premium Marine Equipment Private Auction", "High-End Diving Equipment Retail Event", 31000, 0, 0, 27000, 0, 0],
+        ["MARKET COMMERCE OPPORTUNITY: Eco-Tourism Coral Reef Preservation Charity Dinner", "Premium Ecological Gala Dinner", 35000, 0, 0, 32000, 0, 0]
     ]
 }
 
 # --- PHASE 0: SETUP ENTRY REGISTRATION ---
 if st.session_state.phase == 0:
-    st.title("🚢 Loss or Gain / Which One You Would Choose")
+    st.title("🚢 The Cruise Captain: Good Choices, Bad Choices")
     st.caption('"Caution, there is a problem/situation..."')
     st.write("Welcome corporate cruise manager. Select your assigned group portfolio configuration below:")
     
@@ -115,7 +115,7 @@ if st.session_state.phase == 0:
         st.session_state.days = cfg['duration']
         st.session_state.theme = cfg['theme']
         st.session_state.route = cfg['map']
-        st.session_state.market = cfg['market']
+        st.session_state.route = cfg['map']
         st.session_state.market = cfg['market']
         st.session_state.phase = 1
         st.rerun()
@@ -156,6 +156,7 @@ elif 1 <= st.session_state.phase <= 5:
         o2_text = f"Option B: Execute risk-balanced operational option for {topic}. ({act2}: \${abs(m2):,} | Injury: +{i2} | Death: +{d2})"
 
         st.markdown(f"#### {title}")
+        st.write(f'*Situation Overview: "Caution, there is a problem/situation..."*')
         st.write(f"*Boardroom Situation Context: Emergency management incident affecting your assigned local {st.session_state.route} tracking grids.*")
         st.write("---")
         
@@ -201,10 +202,10 @@ elif 1 <= st.session_state.phase <= 5:
             for log in st.session_state.chosen_logs:
                 st.markdown(f"* {log}")
 
-# --- PHASE 6: SIMPLIFIED EASY ENGLISH END-GAME FINAL AUDIT REPORT SUITE ---
+# --- PHASE 6: UPDATED ENHANCED LABELS SUMMARY END-GAME FINAL AUDIT REPORT SUITE ---
 elif st.session_state.phase == 6:
     st.balloons()
-    st.title("🏆 Game Over: Your Final Cruise Report")
+    st.title("🏆 Cruise Completed! Your Final Cruise Report is ready for review.")
     st.write("Review your corporate management metrics and final balance sheets below. Use this full data tracking ledger report to evaluate and explain your strategic choice decisions for your class assignment.")
     st.write("---")
     
