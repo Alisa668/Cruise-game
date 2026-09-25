@@ -36,7 +36,6 @@ if s['phase'] == 0:
     
     group_choice = st.selectbox("Select Your Group Number (1-8):", ["Group 1", "Group 2", "Group 3", "Group 4", "Group 5", "Group 6", "Group 7", "Group 8"])
     
-    # Safe index parsing based on strings
     g_idx = 0
     if "2" in group_choice: g_idx = 1
     elif "3" in group_choice: g_idx = 2
@@ -52,15 +51,16 @@ if s['phase'] == 0:
     routes = ["Miami ➔ Cozumel", "Seattle ➔ Juneau", "Barcelona ➔ Marseille", "Singapore ➔ Phuket", "Sydney ➔ Auckland", "Hong Kong ➔ Okinawa", "Copenhagen ➔ Helsinki", "Yokohama ➔ Keelung"]
     markets = ["WESTERN Customers (Spends big money at bars/alcohol, wants slow lazy holiday)", "WESTERN Customers (Big families, spends money at casino/games, wants active fun)", "WESTERN Customers (Rich premium travelers, wants expensive fine dining restaurants)", "ASIAN Customers (Big multi-generation families, wants delicious food, demands 'Safety First' layout)", "WESTERN Customers (Adventure travelers, loves outdoor day tours at ports)", "ASIAN Customers (Hong Kong high-end rich shoppers, hates any time delays)", "WESTERN Customers (Older university alumni groups, wants quiet academic study lectures)", "ASIAN Market (Singapore fly-cruise segment, active wildlife/photography focus)"]
 
-    maps = [
-        "[Miami, USA] ======= (Sailing Caribbean Sea) =======> [Cozumel, MEXICO]",
-        "[Seattle, USA] ======= (Sailing Gulf of Alaska) =======> [Juneau, Alaska]",
-        "[Barcelona, SPAIN] ======= (Sailing Mediterranean Sea) =======> [Marseille, FRANCE]",
-        "[Singapore Base] ======= (Sailing Andaman Sea) =======> [Phuket, THAILAND]",
-        "[Sydney, AUSTRALIA] ======= (Sailing Tasman Sea) =======> [Auckland, NEW ZEALAND]",
-        "[Hong Kong Base] ======= (Sailing East China Sea) =======> [Okinawa, JAPAN]",
-        "[Copenhagen, DENMARK] ======= (Sailing Baltic Sea) =======> [Helsinki, FINLAND]",
-        "[Yokohama, JAPAN] ======= (Sailing North Pacific) =======> [Keelung, TAIWAN]"
+    # Deployed 100% stable global vector maps for non-blocking browser loading
+    map_emojis = [
+        "🇺🇸 Miami ➔ 🌊 (Caribbean Sea) ➔ 🇲🇽 Cozumel",
+        "🇺🇸 Seattle ➔ 🌊 (Gulf of Alaska) ➔ 🇺🇸 Juneau",
+        "🇪🇸 Barcelona ➔ 🌊 (Mediterranean Sea) ➔ 🇫🇷 Marseille",
+        "🇸🇬 Singapore ➔ 🌊 (Andaman Sea) ➔ 🇹🇭 Phuket",
+        "🇦🇺 Sydney ➔ 🌊 (Tasman Sea) ➔ 🇳🇿 Auckland",
+        "🇭🇰 Hong Kong ➔ 🌊 (East China Sea) ➔ 🇯🇵 Okinawa",
+        "🇩🇰 Copenhagen ➔ 🌊 (Baltic Sea) ➔ 🇫🇮 Helsinki",
+        "🇯🇵 Yokohama ➔ 🌊 (North Pacific) ➔ 🇹🇼 Keelung"
     ]
 
     s.update({'group': group_choice, 'brand': ships[g_idx], 'days': durations[g_idx], 'theme': themes[g_idx], 'route': routes[g_idx], 'market': markets[g_idx], 'verification_id': f"CODE-G{g_idx+1}-{random.randint(100,999)}"})
@@ -73,7 +73,8 @@ if s['phase'] == 0:
     c2.text_input("Cruise Main Activity Focus:", value=s['theme'], disabled=True)
     
     st.markdown("### 🗺️ Geographic Itinerary Route Map:")
-    st.code(maps[g_idx], language="text")
+    # Render large clean visual route track block
+    st.markdown(f"<div style='background-color:#1E1E24; padding:15px; border-radius:6px; border:1px solid #3A3A43; font-size:24px; color:#00FFCC; font-weight:bold;'>🗺️ {map_emojis[g_idx]}</div>", unsafe_allow_html=True)
 
     if st.button("✅ Confirm Setup - Start the Cruise Now", type="primary", use_container_width=True):
         s['phase'] = 1
@@ -100,33 +101,9 @@ elif 1 <= s['phase'] <= 3:
         else:
             is_asian = "ASIAN" in s['market']
             CARDS = [
-                {
-                    "title": "BAD WEATHER: Big Storm Coming", 
-                    "desc": "A dangerous Category 5 hurricane is blocking your ship's route.", 
-                    "h": "Hurricane Dorian (2019). Western bars/casinos remain highly profitable. Asian markets exhibit a strict collectivist safety expectation.", 
-                    "emoji": "⛈️ 🌊 🌪️", 
-                    "o1": "Safety Detour around storm. (0 hurt, fuel spikes -$6,000)", 
-                    "o2": "Save Fuel money and run at full speed. (85 fallback injuries. Asian retail boycotts cost an extra -$2,000)" if is_asian else "Save Fuel money and run at full speed. (85 fallback injuries, -$2,000 medical lawsuit fees)", 
-                    "m1": -6000, "i1": 0, "d1": 0, "m2": -4000 if is_asian else -2000, "i2": 85, "d2": 0
-                },
-                {
-                    "title": "MEDICAL EMERGENCY: Sickness Outbreak on Board", 
-                    "desc": "A contagious gastrointestinal virus spreads rapidly inside buffet dining rooms.", 
-                    "h": "Oasis of the Seas (2019). Western cabins reject quarantine locks. Asian generational densities spark severe fatalities if ignored.", 
-                    "emoji": "🏥 🤢 💊", 
-                    "o1": "Force in-cabin quarantine. (120 sick, 0 deaths. Western refunds cost -$20,000; Asian lines cooperate at -$12,000)", 
-                    "o2": "Keep theater/public spaces open. (450 sick. Asian family structures report 4 elderly deaths, -$35,000 fine; Western costs -$22,000)", 
-                    "m1": -12000 if is_asian else -20000, "i1": 120, "d1": 0, "m2": -35000 if is_asian else -22000, "i2": 450, "d2": 4 if is_asian else 1
-                },
-                {
-                    "title": "BIG BUSINESS OPPORTUNITY: Shopping Gala Offer", 
-                    "desc": "A luxury retail company requests to lease public decks tonight for a VIP shopping party.", 
-                    "h": "Fleet Charter data. Asian routes generate massive net auxiliary margins from duty-free luxury spending over casual Western itineraries.", 
-                    "emoji": "💎 💰 🎰", 
-                    "o1": "Accept VIP contract. (Asian shopping surges net revenues by +$35,000; Western assets capture +$20,000)", 
-                    "o2": "Decline deal to keep public transit spaces free. (Yields $0 cash injection)", 
-                    "m1": 35000 if is_asian else 20000, "i1": 0, "d1": 0, "m2": 0, "i2": 0, "d2": 0
-                }
+                {"title": "BAD WEATHER: Big Storm Coming", "desc": "A dangerous Category 5 hurricane is blocking your ship's route.", "h": "Hurricane Dorian (2019). Western bars/casinos remain highly profitable. Asian markets exhibit a strict collectivist safety expectation.", "emoji": "⛈️ 🌊 🌪️", "o1": "Safety Detour around storm. (0 hurt, fuel spikes -$6,000)", "o2": "Save Fuel money and run at full speed. (85 fallback injuries. Asian retail boycotts cost an extra -$2,000)" if is_asian else "Save Fuel money and run at full speed. (85 fallback injuries, -$2,000 medical lawsuit fees)", "m1": -6000, "i1": 0, "d1": 0, "m2": -4000 if is_asian else -2000, "i2": 85, "d2": 0},
+                {"title": "MEDICAL EMERGENCY: Sickness Outbreak on Board", "desc": "A contagious gastrointestinal virus spreads rapidly inside buffet dining rooms.", "h": "Oasis of the Seas (2019). Western cabins reject quarantine locks. Asian generational densities spark severe fatalities if ignored.", "emoji": "🏥 🤢 💊", "o1": "Force in-cabin quarantine. (120 sick, 0 deaths. Western refunds cost -$20,000; Asian lines cooperate at -$12,000)", "o2": "Keep theater/public spaces open. (450 sick. Asian family structures report 4 elderly deaths, -$35,000 fine; Western costs -$22,000)", "m1": -12000 if is_asian else -20000, "i1": 120, "d1": 0, "m2": -35000 if is_asian else -22000, "i2": 450, "d2": 4 if is_asian else 1},
+                {"title": "BIG BUSINESS OPPORTUNITY: Shopping Gala Offer", "desc": "A luxury retail company requests to lease public decks tonight for a VIP shopping party.", "h": "Fleet Charter data. Asian routes generate massive net auxiliary margins from luxury spending over casual Western itineraries.", "emoji": "💎 💰 🎰", "o1": "Accept VIP contract. (Asian shopping surges net revenues by +$35,000; Western assets capture +$20,000)", "o2": "Decline deal to keep public transit spaces free. (Yields $0 cash injection)", "m1": 35000 if is_asian else 20000, "i1": 0, "d1": 0, "m2": 0, "i2": 0, "d2": 0}
             ]
             
             g_num_val = 1
@@ -154,3 +131,7 @@ elif 1 <= s['phase'] <= 3:
             
             if st.button("🔴 Choose Option 1", use_container_width=True):
                 s['cash'] += c['m1']; s['injured'] += c['i1']; s['dead'] += c['d1']
+                s['history'].append(f"Phase {s['phase']} Incident: {c['title']}\n  • Your Strategy: [Option 1] {c['o1']}\n  • Financial Cost: ${c['m1']:,} | Sick/Injured: +{c['i1']} | Deaths: +{c['d1']}\n")
+                s['phase'] += 1; s['dice_rolled'] = False; st.rerun()
+            if st.button("🔵 Choose Option 2", use_container_width=True):
+                s['cash'] += c['m2']; s['injured'] += c['i2']; s['dead'] += c['d2']
