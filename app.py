@@ -1,12 +1,12 @@
 import streamlit as st
 import random
 
-# Force single uniform academic font family and consistent styling globally via CSS injection
-st.set_page_config(page_title="Cruise Monopoly System", layout="wide")
+# Force easy reading font styles across the application
+st.set_page_config(page_title="Cruise Board Game", layout="wide")
 st.markdown("""
     <style>
     html, body, [data-testid="stMarkdownContainer"], p, span, div, h1, h2, h3 {
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+        font-family: 'Arial', sans-serif !important;
     }
     .stAlert {
         border-radius: 4px !important;
@@ -22,14 +22,15 @@ if 'game_state' not in st.session_state:
     }
 
 s = st.session_state.game_state
-st.title("🚢 Cruise Monopoly: Global Itinerary Crisis Management Simulator")
+st.title("🚢 Cruise Monopoly: Ship Manager Simulation Game")
 st.write("---")
 
+# --- STEP 1: EASY CONFIGURATION INTERFACE ---
 if s['phase'] == 0:
-    st.header("✍️ Step 1: Initialize Vessel Profile & Itinerary Parameters")
-    st.info("💡 Plagiarism Prevention: Profiles are custom-locked to your unique Group Number!")
+    st.header("✍️ Step 1: Choose Your Group Number")
+    st.info("💡 Your ship setup is auto-locked based on your Group Number to prevent copying!")
     
-    group_choice = st.selectbox("Select Your Assigned Group Number (1-8):", ["Group 1", "Group 2", "Group 3", "Group 4", "Group 5", "Group 6", "Group 7", "Group 8"])
+    group_choice = st.selectbox("Select Your Group Number (1-8):", ["Group 1", "Group 2", "Group 3", "Group 4", "Group 5", "Group 6", "Group 7", "Group 8"])
     
     g_idx = 0
     if "2" in group_choice: g_idx = 1
@@ -40,73 +41,74 @@ if s['phase'] == 0:
     elif "7" in group_choice: g_idx = 6
     elif "8" in group_choice: g_idx = 7
     
-    ships = ["Starry Empress (Western Luxury)", "Oceanic Voyager (Western Family)", "Royal Sovereign (Western Resort)", "Genting Splendor (Asian Resort)", "Coral Majestic (Western Explorer)", "Horizon Dragon (Hong Kong Luxury Yacht)", "Atlantic Crown (Classic Transatlantic)", "Pacific Pacific (Singapore Expedition)"]
-    durations = ["12-Day Med Exploration", "14-Day Grand Caribbean", "16-Day Transoceanic", "18-Day Southeast Asian Tropical", "21-Day Relocation Route", "24-Day East Asia Transit", "27-Day Coastline Explorer", "29-Day Asia-Pacific Expedition"]
-    themes = ["Gourmet Wine & European Wellness", "High-Energy Action & Deck Parties", "Local Heritage & Cultural Track", "Asian Michelin Culinary & Dim Sum Track", "Corporate Executive Tech Summit", "Lunar New Year Cultural Festival", "Multi-Generational Family Holiday", "Remote Scuba & Marine Conservation"]
+    ships = ["Starry Empress (Luxury Ship)", "Oceanic Voyager (Family Holiday Ship)", "Royal Sovereign (Mega-Resort Ship)", "Genting Splendor (Asian Style Resort Ship)", "Coral Majestic (Small Exploration Ship)", "Horizon Dragon (Hong Kong Premium Yacht)", "Atlantic Crown (Classic Ocean Liner)", "Pacific Pacific (Singapore Active Holiday Ship)"]
+    durations = ["12-Day Mediterranean Trip", "14-Day Caribbean Holiday", "16-Day Long Ocean Crossing", "18-Day Southeast Asia Trip", "21-Day Long Cruise Route", "24-Day Big Asia Transit", "27-Day Coastline Tour", "29-Day Deep Wilderness Expedition"]
+    themes = ["Gourmet Food & Spa Focus", "High-Energy Sports & Deck Parties", "History, Local Culture & Sightseeing", "Asian Michelin Dim Sum Food Tour", "Business Meetings & Tech Networking", "Lunar New Year Festival Cruise", "Big Family Vacation & Kids Activities", "Diving, Coral Reefs & Sea Nature"]
     routes = ["Miami ➔ Cozumel", "Seattle ➔ Juneau", "Barcelona ➔ Marseille", "Singapore ➔ Phuket", "Sydney ➔ Auckland", "Hong Kong ➔ Okinawa", "Copenhagen ➔ Helsinki", "Yokohama ➔ Keelung"]
-    markets = ["WESTERN Market (High onboard bar spend, relaxed vacation expectations)", "WESTERN Market (Mass family segment, high gaming spend, active schedules)", "WESTERN Market (Upscale segment, demands fine dining, flexible operations)", "ASIAN Market (Collectivist families, premium dining, strict safety expectations)", "WESTERN Market (Affluent adventurers, heavy shore excursion focus)", "ASIAN Market (Hong Kong high-net-worth segment, extreme delay-sensitive)", "WESTERN Market (Senior alumni demographic, traditional slow-paced schedule)", "ASIAN Market (Singapore fly-cruise segment, active wildlife/photography focus)"]
+    markets = ["WESTERN Customers (Spends big money at bars/alcohol, wants slow lazy holiday)", "WESTERN Customers (Big families, spends money at casino/games, wants active fun)", "WESTERN Customers (Rich premium travelers, wants expensive fine dining restaurants)", "ASIAN Customers (Big multi-generation families, wants delicious food, demands 'Safety First' layout)", "WESTERN Customers (Adventure travelers, loves outdoor day tours at ports)", "ASIAN Customers (Hong Kong high-end rich shoppers, hates any time delays)", "WESTERN Customers (Older university alumni groups, wants quiet academic study lectures)", "ASIAN Customers (Singapore fly-cruise travelers, loves photography/nature tours)"]
 
-    s.update({'group': group_choice, 'brand': ships[g_idx], 'days': durations[g_idx], 'theme': themes[g_idx], 'route': routes[g_idx], 'market': markets[g_idx], 'verification_id': f"CONF-G{g_idx+1}-{random.randint(100,999)}"})
+    s.update({'group': group_choice, 'brand': ships[g_idx], 'days': durations[g_idx], 'theme': themes[g_idx], 'route': routes[g_idx], 'market': markets[g_idx], 'verification_id': f"CODE-G{g_idx+1}-{random.randint(100,999)}"})
 
-    st.write("### 🔒 Auto-Locked Group Specifications:")
+    st.write("### 🔒 Your Auto-Locked Ship Details:")
     c1, c2 = st.columns(2)
-    c1.text_input("Target Passenger Demographic Market:", value=s['market'], disabled=True)
-    c1.text_input("Vessel Brand Identity:", value=s['brand'], disabled=True)
-    c2.text_input("Geographic Itinerary Route:", value=s['route'], disabled=True)
-    c2.text_input("Commercial Theme Focus:", value=s['theme'], disabled=True)
+    c1.text_input("Passenger Market Type:", value=s['market'], disabled=True)
+    c1.text_input("Cruise Ship Name:", value=s['brand'], disabled=True)
+    c2.text_input("Sailing Route Port:", value=s['route'], disabled=True)
+    c2.text_input("Cruise Main Activity Focus:", value=s['theme'], disabled=True)
 
-    if st.button("✅ Confirm Specifications - Cast Off Lines", type="primary"):
+    if st.button("✅ Confirm Setup - Start the Cruise Now", type="primary", use_container_width=True):
         s['phase'] = 1
-        s['history'].extend([f"🚢 BASE MANIFEST SECURED FOR {s['group']} ({s['verification_id']})", f"• Market Profile: {s['market']}", f"• Route: {s['route']} | Theme: {s['theme']}"])
+        s['history'].extend([f"🚢 MANIFEST LOCKED FOR {s['group']} ({s['verification_id']})", f"• Market Segment: {s['market']}", f"• Route: {s['route']} | Focus: {s['theme']}"])
         st.rerun()
 
+# --- STEP 2: SIMPLIFIED CORE BOARD GAME LOOP ---
 elif 1 <= s['phase'] <= 3:
-    st.markdown(f"### 📊 Scoreboard | {s['group']} Active Profile")
+    st.markdown(f"### 📊 Dashboard Status | {s['group']}")
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("💰 Cash Asset Balance", f"${s['cash']:,}")
-    c2.metric("👥 Active Onboard Passengers", f"{s['passengers']:,} Pax")
-    c3.metric("🏥 Total Sick / Injured Pax", f"{s['injured']} Pax", delta=f"+{s['injured']}" if s['injured'] > 0 else None, delta_color="inverse")
-    c4.metric("💀 Cumulative Fatalities", f"{s['dead']} Dead", delta=f"+{s['dead']}" if s['dead'] > 0 else None, delta_color="inverse")
+    c1.metric("💰 Current Money left", f"${s['cash']:,}")
+    c2.metric("👥 Onboard Passengers", f"{s['passengers']:,} People")
+    c3.metric("🏥 Sick / Injured People", f"{s['injured']} Sick", delta=f"+{s['injured']}" if s['injured'] > 0 else None, delta_color="inverse")
+    c4.metric("💀 Dead Passengers", f"{s['dead']} Dead", delta=f"+{s['dead']}" if s['dead'] > 0 else None, delta_color="inverse")
 
     st.write("---")
     col_left, col_right = st.columns(2)
 
     with col_left:
-        st.subheader(f"🎲 Voyage Segment: Phase {s['phase']} / 3 Rounds")
+        st.subheader(f"🎲 Game Progress: Step {s['phase']} / 3 Rounds")
         if not s['dice_rolled']:
-            if st.button("🎲 Shake & Roll Navigation Dice", type="primary"):
+            if st.button("🎲 Click Here to Roll the Dice", type="primary", use_container_width=True):
                 s['current_roll'], s['dice_rolled'] = random.randint(1, 6), True
                 st.rerun()
         else:
-            st.success(f"🎲 Dice Roll Confirmed: Advanced {s['current_roll']} Sectors!")
+            st.success(f"🎲 Dice Roll: You got {s['current_roll']}! Ship moves forward...")
             is_asian = "ASIAN" in s['market']
             
             CARDS = [
                 {
-                    "title": "🚨 WEATHER: Severe Storm Path Entry", 
-                    "desc": "A category 5 hurricane blocks your direct track line.", 
-                    "h": "Hurricane Dorian (2019). Western markets handle sea rolling well. Asian markets expect safety-first protocols.", 
-                    "emoji": "⛈️ 🌊 🌪️", # 100% stable local graphic vector fallback
-                    "o1": "Choice 1: [Option 1] Safety Protocol: Execute regional detour. (0 casualties, fuel spikes -$6,000)", 
-                    "o2": "Choice 2: [Option 2] Schedule Lock: Run ahead of the wind at max speed. (Saves cash, but 85 pax slip injuries. On Asian routes, lost retail costs an extra -$2,000)", 
+                    "title": "BAD WEATHER: Big Storm Coming", 
+                    "desc": "A dangerous Category 5 hurricane is blocking your ship's route.", 
+                    "h": "Real Case: Hurricane Dorian (2019). Western guests stay happy inside bars/casinos during rough seas. Asian guests demand high safety protocols; scary waves will make them leave terrible reviews.", 
+                    "emoji": "⛈️ 🌊 🌪️", 
+                    "o1": "Choice 1: [Option 1] Safety First: Spend money to sail around the storm. (Result: 0 people get hurt, but you lose fuel money -$6,000)", 
+                    "o2": "Choice 2: [Option 2] Save Money: Drive straight through the storm at max speed. (Result: Saves fuel. But waves shake the ship, causing 85 people to fall and break bones. On Asian routes, angry guests boycott shops, costing an extra -$2,000)" if is_asian else "Choice 2: [Option 2] Save Money: Drive straight through the storm at max speed. (Result: Saves fuel. But waves shake the ship, causing 85 people to fall and break bones, costing -$2,000 in medical lawsuits)", 
                     "m1": -6000, "i1": 0, "d1": 0, "m2": -4000 if is_asian else -2000, "i2": 85, "d2": 0
                 },
                 {
-                    "title": "🚨 MEDICAL: Onboard Norovirus Gastro Epidemic", 
-                    "desc": "A contagious gastrointestinal virus breaks loose within the main dining layout sections.", 
-                    "h": "Oasis of the Seas (2019). Western guests demand heavy bar compensations if locked down. Asian routes feature older families vulnerable to fatalities if ignored.", 
-                    "emoji": "🏥 🤢 💊", # 100% stable local graphic vector fallback
-                    "o1": "Choice 1: [Option 1] Isolate Vessel: Mandatory in-cabin quarantine. (120 sick pax, 0 deaths. Western complaints cost -$20,000; Asian collectivism costs -$12,000)", 
-                    "o2": "Choice 2: [Option 2] Maintain Operations: Keep spaces open to save retail revenue. (450 pax infected. Asian multi-generational densities trigger 4 high-risk elderly deaths and -$35,000 fine; Western costs -$22,000)", 
+                    "title": "MEDICAL EMERGENCY: Sickness Outbreak on Board", 
+                    "desc": "A highly contagious stomach virus (Norovirus) spreads quickly through the main restaurants.", 
+                    "h": "Real Case: Oasis of the Seas (2019) where 470+ guests fell ill in 48 hours. Western guests hate room lockdown and demand free alcohol. Asian routes feature older grandparents vulnerable to deaths if ignored.", 
+                    "emoji": "🏥 🤢 💊", 
+                    "o1": "Choice 1: [Option 1] Lockdown Strategy: Force all passengers to stay inside rooms. (Result: Contained. Only 120 people get sick, 0 deaths. Western routes demand refunds costing -$20,000; Asian routes follow rules easily, costing -$12,000)", 
+                    "o2": "Choice 2: [Option 2] Keep Running: Hide the truth and keep theaters open to protect shop revenue. (Result: Outbreak explodes! 450 people get sick. On Asian routes with many grandparents, 4 elderly people die with a massive -$35,000 fine; Western routes report 1 death and -$22,000 penalty)", 
                     "m1": -12000 if is_asian else -20000, "i1": 120, "d1": 0, "m2": -35000 if is_asian else -22000, "i2": 450, "d2": 4 if is_asian else 1
                 },
                 {
-                    "title": "🌟 STRATEGIC OPPORTUNITY: High-Margin Premium Charter Proposal", 
-                    "desc": "A luxury retail conglomerate requests to lease your public decks tonight for a VIP shopping gala.", 
-                    "h": "Corporate charter data. Asian cruise markets generate much higher profit margins from duty-free luxury spending compared to Western casual vacationers.", 
-                    "emoji": "💎 💰 🎰", # 100% stable local graphic vector fallback
-                    "o1": "Choice 1: [Option 1] Commercial Deal: Accept VIP contract. (Asian routes trigger shopping surge of +$35,000; Western routes generate +$20,000)", 
-                    "o2": "Choice 2: [Option 2] Consumer Protection: Decline contract to keep public walking spaces open. (Yields $0 cash injection)", 
+                    "title": "BIG BUSINESS OPPORTUNITY: Shopping Gala Offer", 
+                    "desc": "A giant luxury retail company offers to rent out your main deck tonight for a VIP shopping party.", 
+                    "h": "Real Case: Fleet Charters. Western guests prefer casual areas, but Asian cruise routes make massive profit margins from duty-free luxury shops and casino spending.", 
+                    "emoji": "💎 💰 🎰", 
+                    "o1": "Choice 1: [Option 1] Make a Deal: Accept the corporate lease contract. (Result: On Asian routes, rich guests buy a lot, giving you a huge bonus of +$35,000! Western routes generate +$20,000)", 
+                    "o2": "Choice 2: [Option 2] Decline Deal: Keep spaces free so regular guests can walk around. (Result: Guests are comfortable, but you get +$0 extra cash)", 
                     "m1": 35000 if is_asian else 20000, "i1": 0, "d1": 0, "m2": 0, "i2": 0, "d2": 0
                 }
             ]
@@ -125,22 +127,11 @@ elif 1 <= s['phase'] <= 3:
             random.shuffle(shuffled_cards)
             c = shuffled_cards[s['phase'] - 1]
             
-            # Render Incident Details
+            # Display current event
             st.markdown(f"## 📋 {c['title']}")
-            
-            # Visual Graphic Box Component (Guaranteed 100% display rate under school networks)
             st.markdown(f"<div style='font-size: 80px; text-align: left; padding: 10px 0;'>{c['emoji']}</div>", unsafe_allow_html=True)
-            
-            st.markdown(f"🌍 **Target Market Profile:** **`{s['market']}`**")
-            st.write(f"💬 **Current Incident Vector:** {c['desc']}")
-            st.caption(f"📌 *Benchmark Case Study: {c['h']}*")
+            st.markdown(f"🌍 **Your Passenger Profile:** **`{s['market']}`**")
+            st.write(f"💬 **What is happening:** {c['desc']}")
+            st.caption(f"📌 *Real History Reference: {c['h']}*")
             
             st.write("---")
-            st.subheader("Formulate Your Executive Boardroom Mandate Below:")
-            st.success(f"👉 **{c['o1']}**")
-            st.success(f"👉 **{c['o2']}**")
-            st.write("")
-            
-            col_b1, col_b2 = st.columns(2)
-            if col_b1.button("🔴 Choose Option 1", use_container_width=True):
-                s['cash'] += c['m1']; s['injured'] += c['i1']; s['dead'] += c['d1']
