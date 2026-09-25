@@ -31,7 +31,7 @@ if 'dead' not in st.session_state: st.session_state.dead = 0
 if 'chosen_logs' not in st.session_state: st.session_state.chosen_logs = []
 if 'v_id' not in st.session_state: st.session_state.v_id = "VESS-G" + str(random.randint(11,99)) + "-" + str(random.randint(100,999))
 
-# 精準設定每組專屬的右側及結算資訊數據庫
+# 精準設定每組專屬的航程資訊數據庫
 GROUP_DATA = {
     "Group 1": {"brand": "Starry Empress", "duration": "12-Day Mediterranean Trip", "theme": "Gourmet Food & Spa Focus", "market": "WESTERN Market (High bar spend, wants slow lazy holiday)", "map": "🇺🇸 Miami ➔ 🌊 (Sailing Caribbean Sea) ➔ 🇲🇽 Cozumel"},
     "Group 2": {"brand": "Oceanic Voyager", "duration": "14-Day Caribbean Holiday", "theme": "High-Energy Sports & Deck Parties", "market": "WESTERN Market (Mass family, high casino spend, active fun)", "map": "🇺🇸 Seattle ➔ 🌊 (Sailing Gulf of Alaska) ➔ 🇺🇸 Juneau"},
@@ -67,8 +67,8 @@ if st.session_state.phase == 0:
         st.session_state.phase = 1
         st.rerun()
 
-# --- 第二、三階段：互動決策面板 ---
-elif 1 <= st.session_state.phase <= 3:
+# --- 第二階段：互動決策面板（共 5 輪） ---
+elif 1 <= st.session_state.phase <= 5:
     st.markdown(f"### 📊 Scoreboard | {st.session_state.group} Active Profile")
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("💰 Money left", f"${st.session_state.cash:,}")
@@ -80,89 +80,70 @@ elif 1 <= st.session_state.phase <= 3:
     col_left, col_right = st.columns(2)
     
     with col_left:
-        st.subheader(f"🎲 Round {st.session_state.phase} / 3")
+        st.subheader(f"🎲 Round {st.session_state.phase} / 5")
         is_asian = "ASIAN" in st.session_state.market
         
-        # 依據目前遊輪所屬市場（亞洲/西方）動態調整事件文案與數值
+        # --- 決策難度優化 & 5大場景邏輯設計 ---
         if st.session_state.phase == 1:
             title = "BAD WEATHER: Big Storm Coming"
             desc = "A dangerous Category 5 hurricane blocks your ship's direct route."
             emoji = "⛈️"
-            o1_text = "Safety Detour around storm. (0 hurt, fuel spikes -$6,000)"
+            o1_text = "Safety Detour around storm. (0 dead, fuel costs spikes -$15,000, keeps passengers happy)"
             if is_asian:
-                o2_text = "Save Fuel money and run at full speed. (85 injuries. Asian retail boycotts cost an extra -$2,000)"
-                m2_val = -4000
+                o2_text = "Save fuel money and run through edge at full speed. (Cost spikes -$12,000 due to minor boycotts, 140 severe injuries, 0 dead)"
+                m2_val = -12000
+                i2_val = 140
             else:
-                o2_text = "Save Fuel money and run at full speed. (85 injuries, -$2,000 lawsuit fees)"
-                m2_val = -2000
-            m1_val, i1_val, d1_val, i2_val, d2_val = -6000, 0, 0, 85, 0
+                o2_text = "Save fuel money and run through edge at full speed. (Lawsuit settlement costs -$11,000, 155 injuries, 1 elderly cardiac death)"
+                m2_val = -11000
+                i2_val = 155
+            m1_val, i1_val, d1_val, d2_val = -15000, 0, 0, (0 if is_asian else 1)
             
         elif st.session_state.phase == 2:
             title = "MEDICAL EMERGENCY: Sickness Outbreak on Board"
             desc = "A contagious gastrointestinal virus spreads rapidly inside buffet dining rooms."
             emoji = "🏥"
             if is_asian:
-                o1_text = "Force in-cabin quarantine. (120 sick, 0 deaths. Asian lines cooperate at -$12,000)"
-                o2_text = "Keep theater/public spaces open. (450 sick. Asian family structures report 4 elderly deaths, -$35,000 fine)"
-                m1_val, m2_val, d2_val = -12000, -35000, 4
+                o1_text = "Force strict in-cabin quarantine immediately. (Passenger complaints cost -$18,000 refunds, 60 sick, 0 dead)"
+                o2_text = "Keep public dining and spaces open to save face. (Massive contagion, 420 sick, 5 critical elderly deaths, -$22,000 medical fine)"
+                m1_val, m2_val, i1_val, i2_val, d1_val, d2_val = -18000, -22000, 60, 420, 0, 5
             else:
-                o1_text = "Force in-cabin quarantine. (120 sick, 0 deaths. Western refunds cost -$20,000)"
-                o2_text = "Keep theater/public spaces open. (450 sick. Western costs -$22,000)"
-                m1_val, m2_val, d2_val = -20000, -22000, 1
-            i1_val, d1_val, i2_val = 120, 0, 450
+                o1_text = "Force strict in-cabin quarantine immediately. (Western customer refund storm costs -$25,000, 80 sick, 0 dead)"
+                o2_text = "Keep public dining and spaces open to save face. (Contagion grows, 310 sick, 2 deaths, Class-action lawsuit settlement costs -$21,000)"
+                m1_val, m2_val, i1_val, i2_val, d1_val, d2_val = -25000, -21000, 80, 310, 0, 2
             
-        else:
+        elif st.session_state.phase == 3:
             title = "BIG BUSINESS OPPORTUNITY: Shopping Gala Offer"
             desc = "A luxury retail company requests to lease public decks tonight for a VIP shopping party."
             emoji = "💎"
             if is_asian:
-                o1_text = "Accept VIP contract. (Asian shopping surges net revenues by +$35,000)"
-                m1_val = 35000
+                o1_text = "Accept VIP contract. (Shopping turnover nets large revenue +$35,000, but public area congestion causes 20 minor trip injuries)"
+                m1_val, i1_val = 35000, 20
             else:
-                o1_text = "Accept VIP contract. (Western assets capture +$20,000)"
-                m1_val = 20000
-            o2_text = "Decline deal to keep public transit spaces free. (Yields $0 cash injection)"
-            m2_val, i1_val, d1_val, i2_val, d2_val = 0, 0, 0, 0, 0
+                o1_text = "Accept VIP contract. (Western asset brand deal captures revenue +$22,000, crowd crush causes 15 minor shoulder injuries)"
+                m1_val, i1_val = 22000, 15
+            o2_text = "Decline deal to keep transit spaces free. (Revenue stays at +$4,000 general paths, 0 injuries, 0 dead)"
+            m2_val, d1_val, i2_val, d2_val = 4000, 0, 0, 0
 
-        st.markdown(f"### {emoji} {title}")
-        st.write(f"💬 **Current Situation:** {desc}")
-        st.write("---")
-        st.write("### 🔴 Review Options Carefully:")
-        st.info(f"👉 **Option 1:** {o1_text}")
-        st.info(f"👉 **Option 2:** {o2_text}")
-        
-        # 使用防卡死的單一確認按鈕表單
-        with st.form(key=f"frm_{st.session_state.phase}"):
-            user_choice = st.radio("Select your choice:", ["Option 1", "Option 2"], key=f"sel_{st.session_state.phase}")
-            confirm_btn = st.form_submit_button("🚀 Confirm the decision and run it", type="primary", use_container_width=True)
-            
-            if confirm_btn:
-                if "Option 1" in user_choice:
-                    st.session_state.cash += m1_val
-                    st.session_state.injured += i1_val
-                    st.session_state.dead += d1_val
-                    log_msg = f"Round {st.session_state.phase} - Selected Option 1: {o1_text} | (Cost/Rev: {m1_val}, Injuries: {i1_val}, Deaths: {d1_val})"
-                else:
-                    st.session_state.cash += m2_val
-                    st.session_state.injured += i2_val
-                    st.session_state.dead += d2_val
-                    log_msg = f"Round {st.session_state.phase} - Selected Option 2: {o2_text} | (Cost/Rev: {m2_val}, Injuries: {i2_val}, Deaths: {d2_val})"
-                
-                st.session_state.chosen_logs.append(log_msg)
-                st.session_state.phase += 1
-                st.rerun()
+        elif st.session_state.phase == 4:
+            title = "ENVIRONMENTAL CRISIS: Deep Sea Oil Leakage Risk"
+            desc = "Engineers notice minor fuel oil leakage near a marine sanctuary zone. Repair requires pausing the voyage."
+            emoji = "🛢️"
+            o1_text = "Emergency Stop for instant mid-sea repair. (Parts and schedule delay cost -$19,000, 0 injured, 0 dead)"
+            if is_asian:
+                o2_text = "Ignore warning and dump residue quietly to maintain speed. (Local coastal defense fines cost -$17,500, toxic vapor causes 90 severe nauseous crew injuries, 0 dead)"
+                m2_val = -17500
+                i2_val = 90
+            else:
+                o2_text = "Ignore warning and dump residue quietly to maintain speed. (International environmental fines cost -$16,000, chemical reaction causes engine combustion: 110 burns, 3 deaths)"
+                m2_val = -16000
+                i2_val = 110
+            m1_val, i1_val, d1_val, d2_val = -19000, 0, 0, (0 if is_asian else 3)
 
-    # 右側資訊欄：移除有風險的複雜縮排，保證運行無誤
-    with col_right:
-        st.subheader("📋 Cruise Live Logbook Status")
-        st.markdown(f"**🚢 Vessel ID:** `{st.session_state.v_id}`")
-        st.markdown(f"**🏢 Cruise Line:** {st.session_state.brand}")
-        st.markdown(f"**🎨 Theme Focus:** {st.session_state.theme}")
-        st.markdown(f"**🗺️ Route:** {st.session_state.route}")
-        st.markdown(f"**👥 Target Market:** {st.session_state.market}")
-        st.write("---")
-        st.write("📈 **Round Decisions Tracked So Far:**")
-        
-        if not st.session_state.chosen_logs:
-            st.write("* No strategies executed yet. Complete the current active decision.")
-        
+        else:
+            title = "BOARDROOM SCANDAL: VIP Casino Fraud Accusation"
+            desc = "A high-net-worth VIP whale accuses your ship dealers of running rigged card decks."
+            emoji = "🎰"
+            if is_asian:
+                o1_text = "Pay hush money instantly to settle privately. (Discreet cost -$24,000, avoids public panic, 0 injured, 0 dead)"
+                o2_text = "Refuse payment and challenge them publicly. (Media smear triggers panic, casino stampede causes 130 injuries, 1 security guard death, market asset drop costs -$26,000)"
