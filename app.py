@@ -103,34 +103,30 @@ elif 1 <= st.session_state.phase <= 3:
         st.info(f"👉 **Option 1:** {c['o1']}")
         st.info(f"👉 **Option 2:** {c['o2']}")
         
-        st.write("### 🗔 Cast Your Boardroom Decision Below:")
-        user_choice = st.radio("Select your strategy choice:", ["Option 1", "Option 2"], key=f"radio_phase_{st.session_state.phase}")
-        st.write("---")
-        
-        if st.button("🚀 Confirm the decision and run it", type="primary", use_container_width=True, key=f"btn_phase_{st.session_state.phase}"):
-            if "Option 1" in user_choice:
-                chosen_cost = c['m1']
-                chosen_injury = c['i1']
-                chosen_death = c['d1']
-                chosen_text = c['o1']
-            else:
-                chosen_cost = c['m2']
-                chosen_injury = c['i2']
-                chosen_death = c['d2']
-                chosen_text = c['o2']
+        # Wrapping selection and button inside a neat Streamlit Form fixes the Round 1 submission lock!
+        with st.form(key=f"boardroom_form_ph_{st.session_state.phase}"):
+            st.write("### 🗔 Cast Your Boardroom Decision Below:")
+            user_choice = st.radio("Select your strategy choice:", ["Option 1", "Option 2"], key=f"radio_choice_{st.session_state.phase}")
+            
+            st.write("---")
+            confirm_btn = st.form_submit_button("🚀 Confirm the decision and run it", type="primary", use_container_width=True)
+            
+            if confirm_btn:
+                if "Option 1" in user_choice:
+                    chosen_cost = c['m1']
+                    chosen_injury = c['i1']
+                    chosen_death = c['d1']
+                    chosen_text = c['o1']
+                else:
+                    chosen_cost = c['m2']
+                    chosen_injury = c['i2']
+                    chosen_death = c['d2']
+                    chosen_text = c['o2']
+                    
+                st.session_state.cash += chosen_cost
+                st.session_state.injured += chosen_injury
+                st.session_state.dead += chosen_death
                 
-            st.session_state.cash += chosen_cost
-            st.session_state.injured += chosen_injury
-            st.session_state.dead += chosen_death
-            
-            # Log choices clearly for final report use
-            st.session_state.chosen_logs.append({
-                "round": st.session_state.phase,
-                "title": c['title'],
-                "choice_made": user_choice,
-                "description": chosen_text,
-                "cost": chosen_cost,
-                "injuries": chosen_injury,
-                "deaths": chosen_death
-            })
-            
+                # Append choice data arrays securely
+                st.session_state.chosen_logs.append({
+                    "round": st.session_state.phase,
