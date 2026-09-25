@@ -10,7 +10,7 @@ st.markdown("""
         background: linear-gradient(135deg, #0A192F 0%, #0F3057 100%) !important;
         color: #E2E8F0 !important;
     }
-    h1, h2, h3, label, p, span, div {
+    html, body, [data-testid="stMarkdownContainer"], p, span, div, h1, h2, h3 {
         font-family: 'Arial', sans-serif !important;
     }
     .stAlert {
@@ -53,7 +53,7 @@ if 'v_id' not in st.session_state: st.session_state.v_id = "VESS-G" + str(random
 GROUP_DATA = {
     "Group 1": {"brand": "Starry Empress", "duration": "12-Day Mediterranean Trip", "theme": "Gourmet Food & Spa Focus", "route": "Miami to Cozumel", "market": "WESTERN Market (High bar spend, wants slow lazy holiday)", "map": "🇺🇸 Miami ➔ 🌊 (Sailing Caribbean Sea) ➔ 🇲🇽 Cozumel"},
     "Group 2": {"brand": "Oceanic Voyager", "duration": "14-Day Caribbean Holiday", "theme": "High-Energy Sports & Deck Parties", "route": "Seattle to Juneau", "market": "WESTERN Market (Mass family, high casino spend, active fun)", "map": "🇺🇸 Seattle ➔ 🌊 (Sailing Gulf of Alaska) ➔ 🇺🇸 Juneau"},
-    "Group 3": {"brand": "Royal Sovereign", "duration": "16-Day Long Ocean Crossing", "theme": "History, Local Culture & Sightseeing", "route": "Barcelona to Marseille", "market": "WESTERN Market (Rich premium travelers, fine dining restaurants)", "map": "離 Barcelona ➔ 🌊 (Sailing Mediterranean Sea) ➔ 🇫🇷 Marseille"},
+    "Group 3": {"brand": "Royal Sovereign", "duration": "16-Day Long Ocean Crossing", "theme": "History, Local Culture & Sightseeing", "route": "Barcelona to Marseille", "market": "WESTERN Market (Rich premium travelers, fine dining restaurants)", "map": "🇪🇸 Barcelona ➔ 🌊 (Sailing Mediterranean Sea) ➔ 🇫🇷 Marseille"},
     "Group 4": {"brand": "Genting Splendor", "duration": "18-Day Southeast Asia Trip", "theme": "Asian Michelin Dim Sum Food Tour", "route": "Singapore to Phuket", "market": "ASIAN Market (Big families, delicious food, demands Safety First)", "map": "🇸🇬 Singapore Base ➔ 🌊 (Sailing Andaman Sea) ➔ 🇹🇭 Phuket"},
     "Group 5": {"brand": "Coral Majestic", "duration": "21-Day Long Cruise Route", "theme": "Business Meetings & Tech Networking", "route": "Sydney to Auckland", "market": "WESTERN Market (Adventure travelers, loves outdoor day tours)", "map": "🇦🇺 Sydney ➔ 🌊 (Sailing Tasman Sea) ➔ 🇳🇿 Auckland"},
     "Group 6": {"brand": "Horizon Dragon", "duration": "24-Day Big Asia Transit", "theme": "Lunar New Year Festival Cruise", "route": "Hong Kong to Okinawa", "market": "ASIAN Market (Hong Kong high-end rich shoppers, hates time delays)", "map": "🇭🇰 Hong Kong Base ➔ 🌊 (Sailing East China Sea) ➔ 🇯🇵 Okinawa"},
@@ -74,26 +74,25 @@ if st.session_state.phase == 0:
     
     st.write("### 🔒 Your Auto-Locked Ship Details:")
     c1, c2 = st.columns(2)
-    c1.text_input("Cruise Name:", value=f"{cfg['brand']} ({group_choice})", disabled=True)
+    c1.text_input("Cruise Name:", value=cfg['brand'] + " (" + group_choice + ")", disabled=True)
     c1.text_input("Cruise Theme Focus:", value=cfg['theme'], disabled=True)
     c2.text_input("Demographic Profile:", value=cfg['market'], disabled=True)
     c2.text_input("Cruise Itinerary Route:", value=cfg['map'], disabled=True)
     
     st.markdown("### 🗺️ Geographic Itinerary Route Map:")
-    st.markdown(f"<div style='background-color:#1E1E24; padding:15px; border-radius:6px; border:2px solid #00FFCC; font-size:18px; font-family:monospace; color:#00FFCC; font-weight:bold; text-align:center;'>🗺️ {cfg['map']}</div>", unsafe_allow_html=True)
+    st.markdown("<div style='background-color:#1E1E24; padding:15px; border-radius:6px; border:1px solid #3A3A43; font-size:18px; font-family:monospace; color:#00FFCC; font-weight:bold; text-align:center;'>🗺️ " + cfg['map'] + "</div>", unsafe_allow_html=True)
 
     if st.button("✅ Confirm Setup - Start the Cruise Now", type="primary", use_container_width=True):
         st.session_state.phase = 1
-        st.session_state.history.append(f"🚢 CRUISE INITIAL REPORT: {cfg['brand']} ({group_choice})")
-        st.session_state.history.append(f"• Cruise Theme Focus: {cfg['theme']}")
-        st.session_state.history.append(f"• Demographic Profile: {cfg['market']}")
-        st.session_state.history.append(f"• Cruise Itinerary Route: {cfg['map']}")
+        st.session_state.history.append("🚢 CRUISE INITIAL REPORT: " + cfg['brand'] + " (" + group_choice + ")")
+        st.session_state.history.append("• Cruise Theme Focus: " + cfg['theme'])
+        st.session_state.history.append("• Demographic Profile: " + cfg['market'])
+        st.session_state.history.append("• Cruise Itinerary Route: " + cfg['map'])
         st.session_state.history.append("---")
         st.rerun()
 
 # --- INTERACTIVE SIMULATION GAME FOR PHASE 1 - 3 ---
 elif 1 <= st.session_state.phase <= 3:
-    # On-Screen Scoreboard Tracker
     st.markdown("### 📊 Live Scoreboard Dashboard")
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("💰 Money left", f"${st.session_state.cash:,}")
@@ -105,9 +104,8 @@ elif 1 <= st.session_state.phase <= 3:
     col_left, col_right = st.columns(2)
     
     with col_left:
-        st.subheader(f"🎲 Step {st.session_state.phase} / 3 Rounds")
+        st.subheader("🎲 Step " + str(st.session_state.phase) + " / 3 Rounds")
         
-        # Pull profile key parameters to execute adaptive cultural pricing weights
         hist_str = " ".join(st.session_state.history)
         is_asian = "ASIAN Market" in hist_str
         
@@ -118,17 +116,16 @@ elif 1 <= st.session_state.phase <= 3:
         ]
         
         c = CARDS[st.session_state.phase - 1]
-        st.markdown(f"### {c['emoji']} {c['title']}")
-        st.write(f"💬 **Current Situation:** {c['desc']}")
-        st.caption(f"📌 *Case History: {c['h']}*")
+        st.markdown("### " + c['emoji'] + " " + c['title'])
+        st.write("💬 **Current Situation:** " + c['desc'])
+        st.caption("📌 *Case History: " + c['h'] + "*")
         st.write("---")
         
-        # --- LEFT SIDEBAR: DISTINCT SEPARATION STYLING BOARDS ---
         st.subheader("Review Options Carefully:")
-        st.markdown(f"<div class='option-box-1'>🔴 <b>Option 1:</b> {c['o1']}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div class='option-box-2'>🔵 <b>Option 2:</b> {c['o2']}</div>", unsafe_allow_html=True)
+        st.markdown("<div class='option-box-1'>🔴 <b>Option 1:</b> " + c['o1'] + "</div>", unsafe_allow_html=True)
+        st.markdown("<div class='option-box-2'>🔵 <b>Option 2:</b> " + c['o2'] + "</div>", unsafe_allow_html=True)
         
         b1, b2 = st.columns(2)
-        if b1.button("👉 Select Option 1", use_container_width=True):
-            st.session_state.user_selection = "1"
-        if b2.button("👉 Select Option 2", use_container_width=True):
+        # Flattened button assignment to completely fix layout indentation error
+        if b1.button("👉 Select Option 1", use_container_width=True): st.session_state.user_selection = "1"
+        if b2.button("👉 Select Option 2", use_container_width=True): st.session_state.user_selection = "2"
