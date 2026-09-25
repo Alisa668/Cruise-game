@@ -35,13 +35,32 @@ if s['phase'] == 0:
     st.info("💡 Your ship setup is auto-locked based on your Group Number to prevent copying!")
     
     group_choice = st.selectbox("Select Your Group Number (1-8):", ["Group 1", "Group 2", "Group 3", "Group 4", "Group 5", "Group 6", "Group 7", "Group 8"])
-    g_idx = int(group_choice.split(" ")[1]) - 1
+    g_idx = 0
+    if "2" in group_choice: g_idx = 1
+    elif "3" in group_choice: g_idx = 2
+    elif "4" in group_choice: g_idx = 3
+    elif "5" in group_choice: g_idx = 4
+    elif "6" in group_choice: g_idx = 5
+    elif "7" in group_choice: g_idx = 6
+    elif "8" in group_choice: g_idx = 7
     
     ships = ["Starry Empress (Luxury Ship)", "Oceanic Voyager (Family Holiday Ship)", "Royal Sovereign (Mega-Resort Ship)", "Genting Splendor (Asian Style Resort Ship)", "Coral Majestic (Small Exploration Ship)", "Horizon Dragon (Hong Kong Premium Yacht)", "Atlantic Crown (Classic Ocean Liner)", "Pacific Pacific (Singapore Active Holiday Ship)"]
     durations = ["12-Day Mediterranean Trip", "14-Day Caribbean Holiday", "16-Day Long Ocean Crossing", "18-Day Southeast Asia Trip", "21-Day Long Cruise Route", "24-Day Big Asia Transit", "27-Day Coastline Tour", "29-Day Deep Wilderness Expedition"]
     themes = ["Gourmet Food & Spa Focus", "High-Energy Sports & Deck Parties", "History, Local Culture & Sightseeing", "Asian Michelin Dim Sum Food Tour", "Business Meetings & Tech Networking", "Lunar New Year Festival Cruise", "Big Family Vacation & Kids Activities", "Diving, Coral Reefs & Sea Nature"]
     routes = ["Miami ➔ Cozumel", "Seattle ➔ Juneau", "Barcelona ➔ Marseille", "Singapore ➔ Phuket", "Sydney ➔ Auckland", "Hong Kong ➔ Okinawa", "Copenhagen ➔ Helsinki", "Yokohama ➔ Keelung"]
     markets = ["WESTERN Customers (Spends big money at bars/alcohol, wants slow lazy holiday)", "WESTERN Customers (Big families, spends money at casino/games, wants active fun)", "WESTERN Customers (Rich premium travelers, wants expensive fine dining restaurants)", "ASIAN Customers (Big multi-generation families, wants delicious food, demands 'Safety First' layout)", "WESTERN Customers (Adventure travelers, loves outdoor day tours at ports)", "ASIAN Customers (Hong Kong high-end rich shoppers, hates any time delays)", "WESTERN Customers (Older university alumni groups, wants quiet academic study lectures)", "ASIAN Market (Singapore fly-cruise segment, active wildlife/photography focus)"]
+
+    # Text-Based Maps for students to visualize the route
+    maps = [
+        "[Miami, USA] ======= (Sailing Caribbean Sea) =======> [Cozumel, MEXICO]",
+        "[Seattle, USA] ======= (Sailing Gulf of Alaska) =======> [Juneau, Alaska]",
+        "[Barcelona, SPAIN] ======= (Sailing Mediterranean Sea) =======> [Marseille, FRANCE]",
+        "[Singapore Base] ======= (Sailing Andaman Sea) =======> [Phuket, THAILAND]",
+        "[Sydney, AUSTRALIA] ======= (Sailing Tasman Sea) =======> [Auckland, NEW ZEALAND]",
+        "[Hong Kong Base] ======= (Sailing East China Sea) =======> [Okinawa, JAPAN]",
+        "[Copenhagen, DENMARK] ======= (Sailing Baltic Sea) =======> [Helsinki, FINLAND]",
+        "[Yokohama, JAPAN] ======= (Sailing North Pacific) =======> [Keelung, TAIWAN]"
+    ]
 
     s.update({'group': group_choice, 'brand': ships[g_idx], 'days': durations[g_idx], 'theme': themes[g_idx], 'route': routes[g_idx], 'market': markets[g_idx], 'verification_id': f"CODE-G{g_idx+1}-{random.randint(100,999)}"})
 
@@ -51,10 +70,14 @@ if s['phase'] == 0:
     c1.text_input("Cruise Ship Name:", value=s['brand'], disabled=True)
     c2.text_input("Sailing Route Port:", value=s['route'], disabled=True)
     c2.text_input("Cruise Main Activity Focus:", value=s['theme'], disabled=True)
+    
+    # Showcase the geographic itinerary map box
+    st.markdown("### 🗺️ Geographic Itinerary Route Map:")
+    st.code(maps[g_idx], language="text")
 
     if st.button("✅ Confirm Setup - Start the Cruise Now", type="primary", use_container_width=True):
         s['phase'] = 1
-        s['history'].extend([f"🚢 MANIFEST LOCKED FOR {s['group']} ({s['verification_id']})", f"• Market Segment: {s['market']}", f"• Route: {s['route']} | Focus: {s['theme']}"])
+        s['history'].extend([f"🚢 MASTER MANIFEST FOR {s['group']} ({s['verification_id']})", f"• Ship: {s['brand']} | Duration: {s['days']}", f"• Route Route: {s['route']} | Focus: {s['theme']}", f"• Market Profile: {s['market']}\n---"])
         st.rerun()
 
 elif 1 <= s['phase'] <= 3:
@@ -82,8 +105,8 @@ elif 1 <= s['phase'] <= 3:
                     "desc": "A dangerous Category 5 hurricane is blocking your ship's route.", 
                     "h": "Hurricane Dorian (2019). Western bars/casinos remain highly profitable. Asian markets exhibit a strict collectivist safety expectation.", 
                     "emoji": "⛈️ 🌊 🌪️", 
-                    "o1": "Choice 1: Safety Detour around storm. (0 hurt, fuel spikes -$6,000)", 
-                    "o2": "Choice 2: Save Fuel money and run at full speed. (85 fallback injuries. Asian retail boycotts cost an extra -$2,000)" if is_asian else "Choice 2: Save Fuel money and run at full speed. (85 fallback injuries, -$2,000 legal damages)", 
+                    "o1": "Safety Detour around storm. (0 hurt, fuel spikes -$6,000)", 
+                    "o2": "Save Fuel money and run at full speed. (85 fallback injuries. Asian retail boycotts cost an extra -$2,000)" if is_asian else "Save Fuel money and run at full speed. (85 fallback injuries, -$2,000 medical lawsuit fees)", 
                     "m1": -6000, "i1": 0, "d1": 0, "m2": -4000 if is_asian else -2000, "i2": 85, "d2": 0
                 },
                 {
@@ -91,8 +114,8 @@ elif 1 <= s['phase'] <= 3:
                     "desc": "A contagious gastrointestinal virus spreads rapidly inside buffet dining rooms.", 
                     "h": "Oasis of the Seas (2019). Western cabins reject quarantine locks. Asian generational densities spark severe fatalities if ignored.", 
                     "emoji": "🏥 🤢 💊", 
-                    "o1": "Choice 1: Force in-cabin quarantine. (120 sick, 0 deaths. Western refunds cost -$20,000; Asian lines cooperate at -$12,000)", 
-                    "o2": "Choice 2: Keep theater/public spaces open. (450 sick. Asian family structures report 4 elderly deaths, -$35,000 fine; Western costs -$22,000)", 
+                    "o1": "Force in-cabin quarantine. (120 sick, 0 deaths. Western refunds cost -$20,000; Asian lines cooperate at -$12,000)", 
+                    "o2": "Keep theater/public spaces open. (450 sick. Asian family structures report 4 elderly deaths, -$35,000 fine; Western costs -$22,000)", 
                     "m1": -12000 if is_asian else -20000, "i1": 120, "d1": 0, "m2": -35000 if is_asian else -22000, "i2": 450, "d2": 4 if is_asian else 1
                 },
                 {
@@ -100,13 +123,21 @@ elif 1 <= s['phase'] <= 3:
                     "desc": "A luxury retail company requests to lease public decks tonight for a VIP shopping party.", 
                     "h": "Fleet Charter data. Asian routes generate massive net auxiliary margins from luxury spending over casual Western itineraries.", 
                     "emoji": "💎 💰 🎰", 
-                    "o1": "Choice 1: Accept VIP contract. (Asian shopping surges net revenues by +$35,000; Western assets capture +$20,000)", 
-                    "o2": "Choice 2: Decline deal to keep public transit spaces free. (Yields $0 cash injection)", 
+                    "o1": "Accept VIP contract. (Asian shopping surges net revenues by +$35,000; Western assets capture +$20,000)", 
+                    "o2": "Decline deal to keep public transit spaces free. (Yields $0 cash injection)", 
                     "m1": 35000 if is_asian else 20000, "i1": 0, "d1": 0, "m2": 0, "i2": 0, "d2": 0
                 }
             ]
             
-            g_num_val = int(s['group'].split(" ")[1])
+            g_num_val = 1
+            if "2" in s['group']: g_num_val = 2
+            elif "3" in s['group']: g_num_val = 3
+            elif "4" in s['group']: g_num_val = 4
+            elif "5" in s['group']: g_num_val = 5
+            elif "6" in s['group']: g_num_val = 6
+            elif "7" in s['group']: g_num_val = 7
+            elif "8" in s['group']: g_num_val = 8
+            
             random.seed(g_num_val + 88)
             shuffled_cards = list(CARDS)
             random.shuffle(shuffled_cards)
@@ -118,33 +149,7 @@ elif 1 <= s['phase'] <= 3:
             st.caption(f"📌 *Case History: {c['h']}*")
             st.write("---")
             
-            st.success(f"👉 **{c['o1']}**")
-            st.success(f"👉 **{c['o2']}**")
+            st.success(f"👉 **Option 1:** {c['o1']}")
+            st.success(f"👉 **Option 2:** {c['o2']}")
             
             if st.button("🔴 Choose Option 1", use_container_width=True):
-                s['cash'] += c['m1']; s['injured'] += c['i1']; s['dead'] += c['d1']
-                s['history'].append(f"Phase {s['phase']} - Option 1 Selected | Money: ${c['m1']:,} | Injured: +{c['i1']} | Deaths: +{c['d1']}")
-                s['phase'] += 1; s['dice_rolled'] = False; st.rerun()
-            if st.button("🔵 Choose Option 2", use_container_width=True):
-                s['cash'] += c['m2']; s['injured'] += c['i2']; s['dead'] += c['d2']
-                s['history'].append(f"Phase {s['phase']} - Option 2 Selected | Money: ${c['m2']:,} | Injured: +{c['i2']} | Deaths: +{c['d2']}")
-                s['phase'] += 1; s['dice_rolled'] = False; st.rerun()
-
-    with col_right:
-        st.subheader("📜 Live Ship Logbook Record")
-        for log in s['history']: st.write(f"- {log}")
-
-else:
-    st.balloons()
-    st.header("🏁 Game Finished: Final Audit Report")
-    st.write(f"🔒 **Security Code:** `{s['verification_id']}` | **Your Market:** `{s['market']}`")
-    st.write("---")
-    c1, c2, c3 = st.columns(3)
-    c1.metric("🏁 Final Money Balance", f"${s['cash']:,}")
-    c2.metric("🏥 Total Sick / Injured Pax", f"{s['injured']} People")
-    c3.metric("💀 Total Passenger Deaths", f"{s['dead']} Deaths")
-    st.write("---")
-    log_text = "\n".join(s['history']) + f"\n\n[RESULTS] {s['group']} ({s['verification_id']}) | Money: ${s['cash']:,} | Injured: {s['injured']} | Deaths: {s['dead']}"
-    st.text_area("Select and copy all text below:", value=log_text, height=200)
-    if st.button("🔄 Reset Game (Play Again)", use_container_width=True):
-        st.session_state.clear()
