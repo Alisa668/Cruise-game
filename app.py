@@ -25,7 +25,6 @@ if 'theme' not in st.session_state: st.session_state.theme = ""
 if 'route' not in st.session_state: st.session_state.route = ""
 if 'market' not in st.session_state: st.session_state.market = ""
 if 'map_track' not in st.session_state: st.session_state.map_track = ""
-
 if 'cash' not in st.session_state: st.session_state.cash = 50000
 if 'passengers' not in st.session_state: st.session_state.passengers = 3000
 if 'injured' not in st.session_state: st.session_state.injured = 0
@@ -61,7 +60,7 @@ if st.session_state.phase == 0:
     
     st.markdown("### 🗺️ Geographic Itinerary Route Map:")
     st.markdown("<div style='background-color:#1E1E24; padding:15px; border-radius:6px; border:1px solid #3A3A43; font-size:18px; font-family:monospace; color:#00FFCC; font-weight:bold; text-align:center;'>🗺️ " + cfg['map'] + "</div>", unsafe_allow_html=True)
-
+    
     if st.button("✅ Confirm Setup - Start the Cruise Now", type="primary", use_container_width=True):
         st.session_state.group = group_choice
         st.session_state.brand = f"{cfg['brand']} ({group_choice})"
@@ -72,7 +71,7 @@ if st.session_state.phase == 0:
         st.session_state.phase = 1
         st.rerun()
 
-# --- STEP 2: CORE INTERACTIVE BALLOT PLATFORM ---
+# --- STEP 2 & 3: CORE INTERACTIVE BALLOT PLATFORM ---
 elif 1 <= st.session_state.phase <= 3:
     st.markdown(f"### 📊 Scoreboard | {st.session_state.group} Active Profile")
     c1, c2, c3, c4 = st.columns(4)
@@ -85,13 +84,13 @@ elif 1 <= st.session_state.phase <= 3:
     col_left, col_right = st.columns(2)
     
     with col_left:
-        st.subheader(f"🎲 Step {st.session_state.phase} / 3 Rounds")
+        st.subheader(f"🎲 Round {st.session_state.phase} / 3")
         is_asian = "ASIAN" in st.session_state.market
         
         CARDS = [
-            {"title": "BAD WEATHER: Big Storm Coming", "desc": "A dangerous Category 5 hurricane blocks your ship's direct route.", "h": "Hurricane Dorian (2019). Western bars/casinos remain highly profitable. Asian markets exhibit strict safety expectations.", "emoji": "⛈️ 🌊 🌪️", "o1": "Safety Detour around storm. (0 hurt, fuel spikes -$6,000)", "o2": "Save Fuel money and run at full speed. (85 injuries. Asian retail boycotts cost an extra -$2,000)" if is_asian else "Save Fuel money and run at full speed. (85 injuries, -$2,000 lawsuit fees)", "m1": -6000, "i1": 0, "d1": 0, "m2": -4000 if is_asian else -2000, "i2": 85, "d2": 0},
-            {"title": "MEDICAL EMERGENCY: Sickness Outbreak on Board", "desc": "A contagious gastrointestinal virus spreads rapidly inside buffet dining rooms.", "h": "Oasis of the Seas (2019). Western cabins reject quarantine locks. Asian generational densities spark severe fatalities if ignored.", "emoji": "🏥 🤢 💊", "o1": "Force in-cabin quarantine. (120 sick, 0 deaths. Western refunds cost -$20,000; Asian lines cooperate at -$12,000)", "o2": "Keep theater/public spaces open. (450 sick. Asian family structures report 4 elderly deaths, -$35,000 fine; Western costs -$22,000)", "m1": -12000 if is_asian else -20000, "i1": 120, "d1": 0, "m2": -35000 if is_asian else -22000, "i2": 450, "d2": 4 if is_asian else 1},
-            {"title": "BIG BUSINESS OPPORTUNITY: Shopping Gala Offer", "desc": "A luxury retail company requests to lease public decks tonight for a VIP shopping party.", "h": "Fleet Charter data. Asian cruise markets derive high auxiliary margins from luxury retail turnover over Western casual paths.", "emoji": "💎 💰 🎰", "o1": "Accept VIP contract. (Asian shopping surges net revenues by +$35,000; Western assets capture +$20,000)", "o2": "Decline deal to keep public transit spaces free. (Yields $0 cash injection)", "m1": 35000 if is_asian else 20000, "i1": 0, "d1": 0, "m2": 0, "i2": 0, "d2": 0}
+            {"title": "BAD WEATHER: Big Storm Coming", "desc": "A dangerous Category 5 hurricane blocks your ship's direct route.", "h": "Hurricane Dorian (2019). Western bars/casinos remain highly profitable. Asian markets exhibit strict safety expectations.", "emoji": "⛈️", "o1": "Safety Detour around storm. (0 hurt, fuel spikes -$6,000)", "o2": "Save Fuel money and run at full speed. (85 injuries. Asian retail boycotts cost an extra -$2,000)" if is_asian else "Save Fuel money and run at full speed. (85 injuries, -$2,000 lawsuit fees)", "m1": -6000, "i1": 0, "d1": 0, "m2": -4000 if is_asian else -2000, "i2": 85, "d2": 0},
+            {"title": "MEDICAL EMERGENCY: Sickness Outbreak on Board", "desc": "A contagious gastrointestinal virus spreads rapidly inside buffet dining rooms.", "h": "Oasis of the Seas (2019). Western cabins reject quarantine locks. Asian generational densities spark severe fatalities if ignored.", "emoji": "🏥", "o1": "Force in-cabin quarantine. (120 sick, 0 deaths. Western refunds cost -$20,000; Asian lines cooperate at -$12,000)", "o2": "Keep theater/public spaces open. (450 sick. Asian family structures report 4 elderly deaths, -$35,000 fine; Western costs -$22,000)", "m1": -12000 if is_asian else -20000, "i1": 120, "d1": 0, "m2": -35000 if is_asian else -22000, "i2": 450, "d2": 4 if is_asian else 1},
+            {"title": "BIG BUSINESS OPPORTUNITY: Shopping Gala Offer", "desc": "A luxury retail company requests to lease public decks tonight for a VIP shopping party.", "h": "Fleet Charter data. Asian cruise markets derive high auxiliary margins from luxury retail turnover over Western casual paths.", "emoji": "💎", "o1": "Accept VIP contract. (Asian shopping surges net revenues by +$35,000; Western assets capture +$20,000)", "o2": "Decline deal to keep public transit spaces free. (Yields $0 cash injection)", "m1": 35000 if is_asian else 20000, "i1": 0, "d1": 0, "m2": 0, "i2": 0, "d2": 0}
         ]
         
         c = CARDS[st.session_state.phase - 1]
@@ -100,25 +99,38 @@ elif 1 <= st.session_state.phase <= 3:
         st.caption(f"📌 *Case Benchmark: {c['h']}*")
         st.write("---")
         
-        st.write("### 🔴 Review Options Below:")
+        st.write("### 🔴 Review Options Carefully:")
         st.info(f"👉 **Option 1:** {c['o1']}")
         st.info(f"👉 **Option 2:** {c['o2']}")
         
-        # Consistent 1-submit framework using safe form wrapper
-        with st.form(key=f"ballot_form_{st.session_state.phase}", clear_on_submit=True):
-            user_choice = st.radio("Select your strategy choice:", ["Option 1", "Option 2"])
-            st.write("---")
-            st.warning(f"🎯 **Ready to Submit:** You are about to execute **{user_choice}** for Round {st.session_state.phase}!")
+        st.write("### 🗔 Cast Your Boardroom Decision Below:")
+        user_choice = st.radio("Select your strategy choice:", ["Option 1", "Option 2"], key=f"radio_phase_{st.session_state.phase}")
+        st.write("---")
+        
+        if st.button("🚀 Confirm the decision and run it", type="primary", use_container_width=True, key=f"btn_phase_{st.session_state.phase}"):
+            if "Option 1" in user_choice:
+                chosen_cost = c['m1']
+                chosen_injury = c['i1']
+                chosen_death = c['d1']
+                chosen_text = c['o1']
+            else:
+                chosen_cost = c['m2']
+                chosen_injury = c['i2']
+                chosen_death = c['d2']
+                chosen_text = c['o2']
+                
+            st.session_state.cash += chosen_cost
+            st.session_state.injured += chosen_injury
+            st.session_state.dead += chosen_death
             
-            confirm_btn = st.form_submit_button("🚀 Confirm the decision and run it", use_container_width=True)
+            # Log choices clearly for final report use
+            st.session_state.chosen_logs.append({
+                "round": st.session_state.phase,
+                "title": c['title'],
+                "choice_made": user_choice,
+                "description": chosen_text,
+                "cost": chosen_cost,
+                "injuries": chosen_injury,
+                "deaths": chosen_death
+            })
             
-            if confirm_btn:
-                if "Option 1" in user_choice:
-                    st.session_state.cash += c['m1']
-                    st.session_state.injured += c['i1']
-                    st.session_state.dead += c['d1']
-                    st.session_state.chosen_logs.append(f"Phase {st.session_state.phase} Choice Description: {c['o1']} | Impact Details -> Money Shift: ${c['m1']:,}, Injuries: +{c['i1']} Pax, Fatalities: +{c['d1']}")
-                else:
-                    st.session_state.cash += c['m2']
-                    st.session_state.injured += c['i2']
-                    st.session_state.dead += c['d2']
