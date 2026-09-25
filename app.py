@@ -1,7 +1,7 @@
 import streamlit as st
 import random
 
-# Force unified clean font style and grid containers layout globally
+# 全域設定：統一乾淨字體與寬版版面佈局
 st.set_page_config(page_title="Cruise Board Game", layout="wide")
 st.markdown("""
     <style>
@@ -16,7 +16,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Initialize master state properties
+# 初始化遊戲核心狀態變數（防止快取衝突）
 if 'phase' not in st.session_state: st.session_state.phase = 0
 if 'group' not in st.session_state: st.session_state.group = ""
 if 'brand' not in st.session_state: st.session_state.brand = ""
@@ -31,18 +31,19 @@ if 'dead' not in st.session_state: st.session_state.dead = 0
 if 'chosen_logs' not in st.session_state: st.session_state.chosen_logs = []
 if 'v_id' not in st.session_state: st.session_state.v_id = "VESS-G" + str(random.randint(11,99)) + "-" + str(random.randint(100,999))
 
+# 精準設定每組專屬的右側及結算資訊數據庫
 GROUP_DATA = {
-    "Group 1": {"brand": "Starry Empress", "duration": "12-Day Mediterranean Trip", "theme": "Gourmet Food & Spa Focus", "route": "Miami to Cozumel", "market": "WESTERN Market (High bar spend, wants slow lazy holiday)", "map": "🇺🇸 Miami ➔ 🌊 (Sailing Caribbean Sea) ➔ 🇲🇽 Cozumel"},
-    "Group 2": {"brand": "Oceanic Voyager", "duration": "14-Day Caribbean Holiday", "theme": "High-Energy Sports & Deck Parties", "route": "Seattle to Juneau", "market": "WESTERN Market (Mass family, high casino spend, active fun)", "map": "🇺🇸 Seattle ➔ 🌊 (Sailing Gulf of Alaska) ➔ 🇺🇸 Juneau"},
-    "Group 3": {"brand": "Royal Sovereign", "duration": "16-Day Long Ocean Crossing", "theme": "History, Local Culture & Sightseeing", "route": "Barcelona to Marseille", "market": "WESTERN Market (Rich premium travelers, fine dining)", "map": "🇪🇸 Barcelona ➔ 🌊 (Sailing Mediterranean Sea) ➔ 🇫🇷 Marseille"},
-    "Group 4": {"brand": "Genting Splendor", "duration": "18-Day Southeast Asia Trip", "theme": "Asian Michelin Dim Sum Food Tour", "route": "Singapore to Phuket", "market": "ASIAN Market (Big families, delicious food, Safety First)", "map": "🇸🇬 Singapore Base ➔ 🌊 (Sailing Andaman Sea) ➔ 🇹🇭 Phuket"},
-    "Group 5": {"brand": "Coral Majestic", "duration": "21-Day Long Cruise Route", "theme": "Business Meetings & Tech Networking", "route": "Sydney to Auckland", "market": "WESTERN Market (Adventure travelers, loves outdoor tours)", "map": "🇦🇺 Sydney ➔ 🌊 (Sailing Tasman Sea) ➔ 🇳🇿 Auckland"},
-    "Group 6": {"brand": "Horizon Dragon", "duration": "24-Day Big Asia Transit", "theme": "Lunar New Year Festival Cruise", "route": "Hong Hong Base to Okinawa", "market": "ASIAN Market (Hong Kong high-end rich shoppers, hates delays)", "map": "🇭🇰 Hong Kong Base ➔ 🌊 (Sailing East China Sea) ➔ 🇯🇵 Okinawa"},
+    "Group 1": {"brand": "Starry Empress", "duration": "12-Day Mediterranean Trip", "theme": "Gourmet Food & Spa Focus", "market": "WESTERN Market (High bar spend, wants slow lazy holiday)", "map": "🇺🇸 Miami ➔ 🌊 (Sailing Caribbean Sea) ➔ 🇲🇽 Cozumel"},
+    "Group 2": {"brand": "Oceanic Voyager", "duration": "14-Day Caribbean Holiday", "theme": "High-Energy Sports & Deck Parties", "market": "WESTERN Market (Mass family, high casino spend, active fun)", "map": "🇺🇸 Seattle ➔ 🌊 (Sailing Gulf of Alaska) ➔ 🇺🇸 Juneau"},
+    "Group 3": {"brand": "Royal Sovereign", "duration": "16-Day Long Ocean Crossing", "theme": "History, Local Culture & Sightseeing", "market": "WESTERN Market (Rich premium travelers, fine dining)", "map": "🇪🇸 Barcelona ➔ 🌊 (Sailing Mediterranean Sea) ➔ 🇫🇷 Marseille"},
+    "Group 4": {"brand": "Genting Splendor", "duration": "18-Day Southeast Asia Trip", "theme": "Asian Michelin Dim Sum Food Tour", "market": "ASIAN Market (Big families, delicious food, Safety First)", "map": "🇸🇬 Singapore Base ➔ 🌊 (Sailing Andaman Sea) ➔ 🇹🇭 Phuket"},
+    "Group 5": {"brand": "Coral Majestic", "duration": "21-Day Long Cruise Route", "theme": "Business Meetings & Tech Networking", "market": "WESTERN Market (Adventure travelers, loves outdoor tours)", "map": "🇦🇺 Sydney ➔ 🌊 (Sailing Tasman Sea) ➔ 🇳🇿 Auckland"},
+    "Group 6": {"brand": "Horizon Dragon", "duration": "24-Day Big Asia Transit", "theme": "Lunar New Year Festival Cruise", "market": "ASIAN Market (Hong Kong high-end rich shoppers, hates delays)", "map": "🇭🇰 Hong Kong Base ➔ 🌊 (Sailing East China Sea) ➔ 🇯🇵 Okinawa"},
     "Group 7": {"brand": "Atlantic Crown", "duration": "27-Day Coastline Tour", "theme": "Big Family Vacation & Kids Activities", "market": "WESTERN Market (Older alumni groups, wants lectures)", "map": "🇩🇰 Copenhagen ➔ 🌊 (Sailing Baltic Sea) ➔ 🇫🇮 Helsinki"},
     "Group 8": {"brand": "Pacific Pacific", "duration": "29-Day Deep Wilderness Expedition", "theme": "Diving, Coral Reefs & Sea Nature", "market": "ASIAN Market (Singapore segment, wildlife photography tours)", "map": "🇯🇵 Yokohama ➔ 🌊 (Sailing North Pacific) ➔ 🇹🇼 Keelung"}
 }
 
-# --- STEP 1: INITIAL REGISTRATION FRONT PAGE ---
+# --- 第一階段：選擇組別與資料鎖定 ---
 if st.session_state.phase == 0:
     st.header("✍️ Step 1: Choose Your Group Number")
     group_choice = st.selectbox("Select Your Group Number (1-8):", list(GROUP_DATA.keys()))
@@ -66,7 +67,7 @@ if st.session_state.phase == 0:
         st.session_state.phase = 1
         st.rerun()
 
-# --- STEP 2 & 3: CORE INTERACTIVE BALLOT PLATFORM ---
+# --- 第二、三階段：互動決策面板 ---
 elif 1 <= st.session_state.phase <= 3:
     st.markdown(f"### 📊 Scoreboard | {st.session_state.group} Active Profile")
     c1, c2, c3, c4 = st.columns(4)
@@ -82,7 +83,7 @@ elif 1 <= st.session_state.phase <= 3:
         st.subheader(f"🎲 Round {st.session_state.phase} / 3")
         is_asian = "ASIAN" in st.session_state.market
         
-        # Scenario Content Logic
+        # 依據目前遊輪所屬市場（亞洲/西方）動態調整事件文案與數值
         if st.session_state.phase == 1:
             title = "BAD WEATHER: Big Storm Coming"
             desc = "A dangerous Category 5 hurricane blocks your ship's direct route."
@@ -130,10 +131,9 @@ elif 1 <= st.session_state.phase <= 3:
         st.info(f"👉 **Option 1:** {o1_text}")
         st.info(f"👉 **Option 2:** {o2_text}")
         
-        # Requirement 1: Neat Radio Choice with ONE SINGLE Confirm Button
+        # 使用防卡死的單一確認按鈕表單
         with st.form(key=f"frm_{st.session_state.phase}"):
-            st.write("### 🗔 Cast Your Boardroom Decision Below:")
-            user_choice = st.radio("Select your strategy choice:", ["Option 1", "Option 2"], key=f"sel_{st.session_state.phase}")
+            user_choice = st.radio("Select your choice:", ["Option 1", "Option 2"], key=f"sel_{st.session_state.phase}")
             confirm_btn = st.form_submit_button("🚀 Confirm the decision and run it", type="primary", use_container_width=True)
             
             if confirm_btn:
@@ -141,18 +141,28 @@ elif 1 <= st.session_state.phase <= 3:
                     st.session_state.cash += m1_val
                     st.session_state.injured += i1_val
                     st.session_state.dead += d1_val
-                    log_msg = f"**Round {st.session_state.phase} - {title}:** Selected Option 1 ({o1_text}) | Impact: Cost/Rev ${m1_val:,}, {i1_val} Injured, {d1_val} Dead"
+                    log_msg = f"Round {st.session_state.phase} - Selected Option 1: {o1_text} | (Cost/Rev: {m1_val}, Injuries: {i1_val}, Deaths: {d1_val})"
                 else:
                     st.session_state.cash += m2_val
                     st.session_state.injured += i2_val
                     st.session_state.dead += d2_val
-                    log_msg = f"**Round {st.session_state.phase} - {title}:** Selected Option 2 ({o2_text}) | Impact: Cost/Rev ${m2_val:,}, {i2_val} Injured, {d2_val} Dead"
+                    log_msg = f"Round {st.session_state.phase} - Selected Option 2: {o2_text} | (Cost/Rev: {m2_val}, Injuries: {i2_val}, Deaths: {d2_val})"
                 
-                # Append simple text message to prevent dictionary parsing error completely
                 st.session_state.chosen_logs.append(log_msg)
                 st.session_state.phase += 1
                 st.rerun()
 
+    # 右側隨時動態同步該組別資料
     with col_right:
         st.subheader("📋 Cruise Live Logbook Status")
         st.markdown(f"**🚢 Vessel ID:** `{st.session_state.v_id}`")
+        st.markdown(f"**🏢 Cruise Line:** {st.session_state.brand}")
+        st.markdown(f"**🎨 Theme Focus:** {st.session_state.theme}")
+        st.markdown(f"**🗺️ Route:** {st.session_state.route}")
+        st.markdown(f"**👥 Target Market:** {st.session_state.market}")
+        st.write("---")
+        
+        st.write("📈 **Round Decisions Tracked So Far:**")
+        if not st.session_state.chosen_logs:
+            st.write("* No strategies executed yet. Complete the current active decision.")
+        else:
