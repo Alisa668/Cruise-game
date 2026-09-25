@@ -3,15 +3,18 @@ import random
 
 st.set_page_config(page_title="Cruise Game", layout="wide")
 
-# Standard styling fallback to lock consistent font structures
+# Extreme layout compression to force all elements onto a single screen height
 st.markdown("""
     <style>
-    html, body, p, span, div, h1, h2, h3 { font-family: 'Arial', sans-serif !important; }
-    .stAlert { border-radius: 4px !important; padding: 10px !important; }
+    html, body, p, span, div, h1, h2, h3 { 
+        font-family: 'Arial', sans-serif !important; 
+    }
+    .stAlert { border-radius: 4px !important; padding: 6px !important; margin-bottom: 4px !important; }
+    div[data-testid="stVerticalBlock"] > div { margin-bottom: -15px !important; padding-bottom: 0px !important; }
+    div[block-container] { padding-top: 1rem !important; padding-bottom: 0rem !important; }
     </style>
 """, unsafe_allow_html=True)
 
-# Defensive backend state configuration to support multi-device mobile browsers
 if 'phase' not in st.session_state: st.session_state.phase = 0
 if 'cash' not in st.session_state: st.session_state.cash = 50000
 if 'passengers' not in st.session_state: st.session_state.passengers = 3000
@@ -23,62 +26,36 @@ if 'v_id' not in st.session_state: st.session_state.v_id = "VESS-G" + str(random
 st.title("🚢 Cruise Monopoly: Ship Manager Game")
 st.write("---")
 
-# --- STEP 1: INITIAL PROFILE INITIALIZATION ---
 if st.session_state.phase == 0:
     st.header("✍️ Step 1: Choose Your Group Number")
     st.info("💡 Your ship setup is auto-locked based on your Group Number to prevent copying!")
     
     group_choice = st.selectbox("Select Your Group Number (1-8):", ["Group 1", "Group 2", "Group 3", "Group 4", "Group 5", "Group 6", "Group 7", "Group 8"])
     
-    # 100% foolproof hardcoded matrix mapping to eliminate any split() or conversion errors
     if group_choice == "Group 1":
-        m_txt = "WESTERN Market (High bar spend, wants slow lazy holiday)"
-        s_txt = "Starry Empress (Luxury Ship)"
-        r_txt = "Miami to Cozumel (Caribbean)"
-        t_txt = "Gourmet Food & Spa Focus"
-        map_line = "📍 USA (Miami) ================ Sailing Caribbean Sea ================> MEXICO (Cozumel) 🏁"
+        m_txt, s_txt, r_txt, t_txt = "WESTERN Market (High bar spend)", "Starry Empress (Luxury Ship)", "Miami to Cozumel (Caribbean)", "Gourmet Food & Spa Focus"
+        map_line = "🇺🇸 Miami ➔ 🌊 (Caribbean Sea) ➔ 🇲🇽 Cozumel"
     elif group_choice == "Group 2":
-        m_txt = "WESTERN Market (Mass family, high casino spend, active fun)"
-        s_txt = "Oceanic Voyager (Family Ship)"
-        r_txt = "Seattle to Juneau (Alaska)"
-        t_txt = "High-Energy Sports & Deck Parties"
-        map_line = "📍 USA (Seattle) ================ Sailing Gulf of Alaska ================> ALASKA (Juneau) 🏁"
+        m_txt, s_txt, r_txt, t_txt = "WESTERN Market (Mass family resort)", "Oceanic Voyager (Family Ship)", "Seattle to Juneau (Alaska)", "High-Energy Sports & Deck Parties"
+        map_line = "🇺🇸 Seattle ➔ 🌊 (Gulf of Alaska) ➔ 🇺🇸 Juneau"
     elif group_choice == "Group 3":
-        m_txt = "WESTERN Market (Rich premium travelers, fine dining restaurants)"
-        s_txt = "Royal Sovereign (Mega-Resort Ship)"
-        r_txt = "Barcelona to Marseille (Med Loop)"
-        t_txt = "History, Local Culture & Sightseeing"
-        map_line = "📍 SPAIN (Barcelona) ================ Sailing Mediterranean ================> FRANCE (Marseille) 🏁"
+        m_txt, s_txt, r_txt, t_txt = "WESTERN Market (Rich premium travelers)", "Royal Sovereign (Mega-Resort Ship)", "Barcelona to Marseille (Med Loop)", "History, Local Culture & Sightseeing"
+        map_line = "🇪🇸 Barcelona ➔ 🌊 (Mediterranean Sea) ➔ 🇫🇷 Marseille"
     elif group_choice == "Group 4":
-        m_txt = "ASIAN Market (Big families, delicious food, demands Safety First)"
-        s_txt = "Genting Splendor (Asian Style Ship)"
-        r_txt = "Singapore to Phuket (Andaman Sea)"
-        t_txt = "Asian Michelin Dim Sum Food Tour"
-        map_line = "📍 SINGAPORE Base ================ Sailing Andaman Sea ================> THAILAND (Phuket) 🏁"
+        m_txt, s_txt, r_txt, t_txt = "ASIAN Market (Big families, Safety First)", "Genting Splendor (Asian Style Ship)", "Singapore to Phuket (Andaman Sea)", "Asian Michelin Dim Sum Food Tour"
+        map_line = "🇸🇬 Singapore ➔ 🌊 (Andaman Sea) ➔ 🇹🇭 Phuket"
     elif group_choice == "Group 5":
-        m_txt = "WESTERN Market (Adventure travelers, loves outdoor day tours)"
-        s_txt = "Coral Majestic (Exploration Ship)"
-        r_txt = "Sydney to Auckland (Tasman Sea)"
-        t_txt = "Business Meetings & Tech Networking"
-        map_line = "📍 AUSTRALIA (Sydney) ================ Sailing Tasman Sea ================> NEW ZEALAND (Auckland) 🏁"
+        m_txt, s_txt, r_txt, t_txt = "WESTERN Market (Adventure travelers)", "Coral Majestic (Exploration Ship)", "Sydney to Auckland (Tasman Sea)", "Business Meetings & Tech Networking"
+        map_line = "🇦🇺 Sydney ➔ 🌊 (Tasman Sea) ➔ 🇳🇿 Auckland"
     elif group_choice == "Group 6":
-        m_txt = "ASIAN Market (Hong Kong high-end rich shoppers, hates time delays)"
-        s_txt = "Horizon Dragon (Hong Kong Yacht)"
-        r_txt = "Hong Kong to Okinawa (East China Sea)"
-        t_txt = "Lunar New Year Festival Cruise"
-        map_line = "📍 HONG KONG Base ================ Sailing East China Sea ================> JAPAN (Okinawa) 🏁"
+        m_txt, s_txt, r_txt, t_txt = "ASIAN Market (Hong Kong rich shoppers)", "Horizon Dragon (Hong Kong Yacht)", "Hong Kong to Okinawa (East China Sea)", "Lunar New Year Festival Cruise"
+        map_line = "🇭🇰 Hong Kong ➔ 🌊 (East China Sea) ➔ 🇯🇵 Okinawa"
     elif group_choice == "Group 7":
-        m_txt = "WESTERN Market (Older alumni groups, wants quiet academic study lectures)"
-        s_txt = "Atlantic Crown (Classic Ocean Liner)"
-        r_txt = "Copenhagen to Helsinki (Baltic Sea)"
-        t_txt = "Big Family Vacation & Kids Activities"
-        map_line = "📍 DENMARK (Copenhagen) ================ Sailing Baltic Sea ================> FINLAND (Helsinki) 🏁"
+        m_txt, s_txt, r_txt, t_txt = "WESTERN Market (Older alumni groups)", "Atlantic Crown (Classic Ocean Liner)", "Copenhagen to Helsinki (Baltic Sea)", "Big Family Vacation & Kids Activities"
+        map_line = "🇩🇰 Copenhagen ➔ 🌊 (Baltic Sea) ➔ 🇫🇮 Helsinki"
     else:
-        m_txt = "ASIAN Market (Singapore segment, wildlife photography tours)"
-        s_txt = "Pacific Pacific (Singapore Active Ship)"
-        r_txt = "Yokohama to Keelung (North Pacific)"
-        t_txt = "Diving, Coral Reefs & Sea Nature"
-        map_line = "📍 JAPAN (Yokohama) ================ Sailing North Pacific ================> TAIWAN (Keelung) 🏁"
+        m_txt, s_txt, r_txt, t_txt = "ASIAN Market (Singapore segment, wildlife)", "Pacific Pacific (Singapore Active Ship)", "Yokohama to Keelung (North Pacific)", "Diving, Coral Reefs & Sea Nature"
+        map_line = "🇯🇵 Yokohama ➔ 🌊 (North Pacific) ➔ 🇹🇼 Keelung"
 
     st.write("### 🔒 Your Auto-Locked Ship Details:")
     c1, c2 = st.columns(2)
@@ -87,8 +64,8 @@ if st.session_state.phase == 0:
     c2.text_input("Sailing Route Port:", value=r_txt, disabled=True)
     c2.text_input("Cruise Main Activity Focus:", value=t_txt, disabled=True)
     
-    st.markdown("### 🗺️ Geographic Itinerary Route Map (Visible on all Devices):")
-    st.markdown("<div style='background-color:#1E1E24; padding:15px; border-radius:6px; border:1px solid #3A3A43; font-size:18px; font-family:monospace; color:#00FFCC; font-weight:bold; text-align:center;'>" + map_line + "</div>", unsafe_allow_html=True)
+    st.markdown("### 🗺️ Geographic Itinerary Route Map:")
+    st.markdown("<div style='background-color:#1E1E24; padding:10px; border-radius:4px; border:1px solid #3A3A43; font-size:18px; font-family:monospace; color:#00FFCC; font-weight:bold; text-align:center;'>🗺️ " + map_line + "</div>", unsafe_allow_html=True)
 
     if st.button("✅ Confirm Setup - Start the Cruise Now", type="primary", use_container_width=True):
         st.session_state.phase = 1
@@ -100,7 +77,6 @@ if st.session_state.phase == 0:
         ])
         st.rerun()
 
-# --- STEP 2: CRISIS RUN ENGINE ROUNDS ---
 elif 1 <= st.session_state.phase <= 3:
     st.markdown("### 📊 Live Scoreboard Dashboard")
     c1, c2, c3, c4 = st.columns(4)
@@ -114,7 +90,6 @@ elif 1 <= st.session_state.phase <= 3:
     
     with col_left:
         st.subheader("🎲 Step " + str(st.session_state.phase) + " / 3 Rounds")
-        
         history_summary = " ".join(st.session_state.history)
         is_asian = "ASIAN" in history_summary
         
@@ -125,27 +100,39 @@ elif 1 <= st.session_state.phase <= 3:
         ]
         
         c = CARDS[st.session_state.phase - 1]
-        
         st.markdown("### " + c['emoji'] + " " + c['title'])
         st.write("💬 **Situation:** " + c['desc'])
         st.caption("📌 *Case Benchmark: " + c['h'] + "*")
         st.write("---")
         
-        with st.form(key=f"round_form_{st.session_state.phase}"):
-            st.subheader("Review Options Carefully:")
+        with st.form(key=f"round_form_{st.session_state.phase}", clear_on_submit=True):
             st.info("🔴 " + c['o1'])
             st.info("🔵 " + c['o2'])
-            
             user_choice = st.radio("Select your team's strategy:", ["Option 1", "Option 2"])
             submit_decision = st.form_submit_button("🚀 Confirm the decision and run it", use_container_width=True)
             
             if submit_decision:
                 if "Option 1" in user_choice:
-                    st.session_state.cash += c['m1']
-                    st.session_state.injured += c['i1']
-                    st.session_state.dead += c['d1']
-                    st.session_state.history.append("Phase " + str(st.session_state.phase) + " | Strategy: Option 1 | Money Shift: $" + str(c['m1']) + " | Injured: +" + str(c['i1']) + " | Dead: +" + str(c['d1']))
+                    st.session_state.cash += c['m1']; st.session_state.injured += c['i1']; st.session_state.dead += c['d1']
+                    st.session_state.history.append("Phase " + str(st.session_state.phase) + " | Strategy: Option 1 | Money Shift: $" + str(c['m1']) + " | Injured: +" + str(c['i1']))
                 else:
-                    st.session_state.cash += c['m2']
-                    st.session_state.injured += c['i2']
-                    st.session_state.dead += c['d2']
+                    st.session_state.cash += c['m2']; st.session_state.injured += c['i2']; st.session_state.dead += c['d2']
+                    st.session_state.history.append("Phase " + str(st.session_state.phase) + " | Strategy: Option 2 | Money Shift: $" + str(c['m2']) + " | Injured: +" + str(c['i2']))
+                st.session_state.phase += 1
+                st.rerun()
+
+    with col_right:
+        st.subheader("📜 Live Ship Logbook Record")
+        for log in st.session_state.history: st.write(log)
+
+else:
+    st.balloons()
+    st.header("🏁 Game Finished: Final Audit Report")
+    st.write("🔒 **Session Security ID:** `" + st.session_state.v_id + "`")
+    st.write("---")
+    col1, col2, col3 = st.columns(3)
+    col1.metric("🏁 Final Money Balance", f"${st.session_state.cash:,}")
+    col2.metric("🏥 Total Sick / Injured Pax", f"{st.session_state.injured} People")
+    col3.metric("💀 Total Passenger Deaths", f"{st.session_state.dead} Deaths")
+    st.write("---")
+    st.subheader("📋 Copy this log block below for your presentation assignment:")
