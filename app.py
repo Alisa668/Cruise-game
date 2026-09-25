@@ -83,21 +83,23 @@ elif 1 <= st.session_state.phase <= 5:
         st.subheader(f"🎲 Round {st.session_state.phase} / 5")
         is_asian = "ASIAN" in st.session_state.market
         
-        # --- 決策難度優化 & 5大場景邏輯設計 ---
+        # 預先初始化所有數據變數，防止未定義導致渲染中斷
+        title, desc, emoji, o1_text, o2_text = "", "", "", "", ""
+        m1_val, i1_val, d1_val, m2_val, i2_val, d2_val = 0, 0, 0, 0, 0, 0
+        
+        # --- 決策數據全環境相容安全優化 ---
         if st.session_state.phase == 1:
             title = "BAD WEATHER: Big Storm Coming"
             desc = "A dangerous Category 5 hurricane blocks your ship's direct route."
             emoji = "⛈️"
             o1_text = "Safety Detour around storm. (0 dead, fuel costs spikes -$15,000, keeps passengers happy)"
+            m1_val, i1_val, d1_val = -15000, 0, 0
             if is_asian:
                 o2_text = "Save fuel money and run through edge at full speed. (Cost spikes -$12,000 due to minor boycotts, 140 severe injuries, 0 dead)"
-                m2_val = -12000
-                i2_val = 140
+                m2_val, i2_val, d2_val = -12000, 140, 0
             else:
                 o2_text = "Save fuel money and run through edge at full speed. (Lawsuit settlement costs -$11,000, 155 injuries, 1 elderly cardiac death)"
-                m2_val = -11000
-                i2_val = 155
-            m1_val, i1_val, d1_val, d2_val = -15000, 0, 0, (0 if is_asian else 1)
+                m2_val, i2_val, d2_val = -11000, 155, 1
             
         elif st.session_state.phase == 2:
             title = "MEDICAL EMERGENCY: Sickness Outbreak on Board"
@@ -106,39 +108,39 @@ elif 1 <= st.session_state.phase <= 5:
             if is_asian:
                 o1_text = "Force strict in-cabin quarantine immediately. (Passenger complaints cost -$18,000 refunds, 60 sick, 0 dead)"
                 o2_text = "Keep public dining and spaces open to save face. (Massive contagion, 420 sick, 5 critical elderly deaths, -$22,000 medical fine)"
-                m1_val, m2_val, i1_val, i2_val, d1_val, d2_val = -18000, -22000, 60, 420, 0, 5
+                m1_val, i1_val, d1_val = -18000, 60, 0
+                m2_val, i2_val, d2_val = -22000, 420, 5
             else:
                 o1_text = "Force strict in-cabin quarantine immediately. (Western customer refund storm costs -$25,000, 80 sick, 0 dead)"
                 o2_text = "Keep public dining and spaces open to save face. (Contagion grows, 310 sick, 2 deaths, Class-action lawsuit settlement costs -$21,000)"
-                m1_val, m2_val, i1_val, i2_val, d1_val, d2_val = -25000, -21000, 80, 310, 0, 2
+                m1_val, i1_val, d1_val = -25000, 80, 0
+                m2_val, i2_val, d2_val = -21000, 310, 2
             
         elif st.session_state.phase == 3:
             title = "BIG BUSINESS OPPORTUNITY: Shopping Gala Offer"
             desc = "A luxury retail company requests to lease public decks tonight for a VIP shopping party."
             emoji = "💎"
+            o2_text = "Decline deal to keep transit spaces free. (Revenue stays at +$4,000 general paths, 0 injuries, 0 dead)"
+            m2_val, i2_val, d2_val = 4000, 0, 0
             if is_asian:
                 o1_text = "Accept VIP contract. (Shopping turnover nets large revenue +$35,000, but public area congestion causes 20 minor trip injuries)"
-                m1_val, i1_val = 35000, 20
+                m1_val, i1_val, d1_val = 35000, 20, 0
             else:
                 o1_text = "Accept VIP contract. (Western asset brand deal captures revenue +$22,000, crowd crush causes 15 minor shoulder injuries)"
-                m1_val, i1_val = 22000, 15
-            o2_text = "Decline deal to keep transit spaces free. (Revenue stays at +$4,000 general paths, 0 injuries, 0 dead)"
-            m2_val, d1_val, i2_val, d2_val = 4000, 0, 0, 0
+                m1_val, i1_val, d1_val = 22000, 15, 0
 
         elif st.session_state.phase == 4:
             title = "ENVIRONMENTAL CRISIS: Deep Sea Oil Leakage Risk"
             desc = "Engineers notice minor fuel oil leakage near a marine sanctuary zone. Repair requires pausing the voyage."
             emoji = "🛢️"
             o1_text = "Emergency Stop for instant mid-sea repair. (Parts and schedule delay cost -$19,000, 0 injured, 0 dead)"
+            m1_val, i1_val, d1_val = -19000, 0, 0
             if is_asian:
                 o2_text = "Ignore warning and dump residue quietly to maintain speed. (Local coastal defense fines cost -$17,500, toxic vapor causes 90 severe nauseous crew injuries, 0 dead)"
-                m2_val = -17500
-                i2_val = 90
+                m2_val, i2_val, d2_val = -17500, 90, 0
             else:
                 o2_text = "Ignore warning and dump residue quietly to maintain speed. (International environmental fines cost -$16,000, chemical reaction causes engine combustion: 110 burns, 3 deaths)"
-                m2_val = -16000
-                i2_val = 110
-            m1_val, i1_val, d1_val, d2_val = -19000, 0, 0, (0 if is_asian else 3)
+                m2_val, i2_val, d2_val = -16000, 110, 3
 
         else:
             title = "BOARDROOM SCANDAL: VIP Casino Fraud Accusation"
@@ -146,4 +148,3 @@ elif 1 <= st.session_state.phase <= 5:
             emoji = "🎰"
             if is_asian:
                 o1_text = "Pay hush money instantly to settle privately. (Discreet cost -$24,000, avoids public panic, 0 injured, 0 dead)"
-                o2_text = "Refuse payment and challenge them publicly. (Media smear triggers panic, casino stampede causes 130 injuries, 1 security guard death, market asset drop costs -$26,000)"
