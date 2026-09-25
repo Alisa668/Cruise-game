@@ -30,13 +30,13 @@ GROUP_DATA = {
     "Group 8": {"brand": "Pacific Pacific", "duration": "29-Day Deep Wilderness Expedition", "theme": "Diving, Coral Reefs & Sea Nature", "market": "ASIAN Market Segment", "map": "Yokohama (Japan) to Keelung (Taiwan)"}
 }
 
-# --- MATRIX DATA ENGINE: RE-BALANCED PRO PROFITS & TITLE CASE FORMATION ---
+# --- MATRIX DATA ENGINE: RE-BALANCED CLOSE-MARGIN FINANCIAL STRATEGIES ---
 # Data layout format map: [Title, Topic Keyword, M1, i1, d1, M2, i2, d2]
 DB = {
     "Group 1": [
         ["Weather Hazard: Hurricane Dorian Interception", "Hurricane Dorian Bypass", -45000, 15, 1, -5000, 290, 2],
         ["Contagion Alert: Aggressive Buffet Norovirus Outbreak", "Norovirus Isolation Plan", -38000, 45, 1, -8000, 340, 2],
-        ["Commercial Revenue Deed: Luxury Brand Shopping Gala", "Atrium Luxury Retail Lease", 39000, 0, 0, 42000, 0, 0],
+        ["Commercial Revenue Deed: Luxury Brand Shopping Gala", "Atrium Luxury Retail Lease", 38000, 0, 0, 42000, 0, 0],
         ["High-Yield Revenue Opportunity: Duty-Free Champagne Lounge Sponsorship", "Duty-Free Sponsorship Offer", 35000, 0, 0, 37000, 0, 0],
         ["Market Commerce Opportunity: Premium Spa Package Launch", "Specialty Spa Upsell Event", 30000, 0, 0, 32000, 0, 0]
     ],
@@ -116,7 +116,6 @@ if st.session_state.phase == 0:
         st.session_state.market = cfg['market']
         st.session_state.phase = 1
         st.rerun()
-
 # --- PHASE 1 - 5: THE INTERACTIVE SIMULATION BOARDROOM ---
 elif 1 <= st.session_state.phase <= 5:
     # Permanent Scoreboard Metrics Header
@@ -128,19 +127,29 @@ elif 1 <= st.session_state.phase <= 5:
     m_col4.metric("Total Number of Death", f"{st.session_state.dead} Deaths")
     st.write("---")
     
-    col_left, col_right = st.columns()
+    # FIXED: Passed explicit ratio layout weight array [2, 1] inside columns statement to solve the crash
+    col_left, col_right = st.columns([2, 1])
     
     with col_left:
         # Load the base array safely from our compressed engine matrix
         arr = DB[st.session_state.group][st.session_state.phase - 1]
-        title, topic, m1, i1, d1, m2, i2, d2 = arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7]
         
+        title = arr[0]
+        topic = arr[1]
+        m1 = arr[2]
+        i1 = arr[3]
+        d1 = arr[4]
+        m2 = arr[5]
+        i2 = arr[6]
+        d2 = arr[7]
+        
+        # Reconstruct choice text strings dynamically
         act1 = "Gain profit" if m1 > 0 else "Pay penalty losses"
         act2 = "Gain profit" if m2 > 0 else "Pay penalty losses"
         o1_text = f"Option 1: Execute protective strategy plan for {topic}. ({act1}: \${abs(m1):,} | Injury: +{i1} | Death: +{d1})"
         o2_text = f"Option 2: Execute risk-balanced operational option for {topic}. ({act2}: \${abs(m2):,} | Injury: +{i2} | Death: +{d2})"
 
-        # Requirement 1 & 2 Met: Prepend explicit Q1/Q2 indicator, shift title down to a brand new line, use Title Case
+        # Header modifications: Captain alert and Title moved to a new row with big bold header
         st.markdown('### "Captain, there is a problem/situation..."')
         st.markdown(f"## **Q{st.session_state.phase}: {title}**")
         st.write("---")
@@ -158,17 +167,16 @@ elif 1 <= st.session_state.phase <= 5:
             final_injury = i1 if is_opt1 else i2
             final_death = d1 if is_opt1 else d2
             final_desc = o1_text if is_opt1 else o2_text
-            rejected_desc = o2_text if is_opt1 else o1_text
             
             st.session_state.cash += final_cost
             st.session_state.injured += final_injury
             st.session_state.dead += final_death
             
-            # Save historical indexes tracking records for final evaluation report
+            # FIXED: Fully restored dynamic variables array mapping to track explicit texts
             st.session_state.chosen_logs.append([
                 f"Q{st.session_state.phase}",
                 title,
-                "Option 1" if is_opt1 else "Option 2",
+                user_choice,
                 o1_text,
                 o2_text
             ])
@@ -177,6 +185,7 @@ elif 1 <= st.session_state.phase <= 5:
             st.rerun()
 
     with col_right:
+        # Modified sidebar labels to Cruise Summary Profile & Group Number
         st.subheader("📋 Cruise Summary Profile")
         st.markdown(f"* **Vessel ID Profile:** `{st.session_state.v_id}`")
         st.markdown(f"* **Group Number:** {st.session_state.group}")
@@ -186,21 +195,21 @@ elif 1 <= st.session_state.phase <= 5:
         st.markdown(f"* **Target Demographics Profile:** {st.session_state.market}")
         
         st.write("---")
-        # Requirement 2 Met: Enhanced details tracker reflecting cumulative outcome values in right side live logging
         st.subheader("📈 Round Decisions Tracked So Far:")
         if not st.session_state.chosen_logs:
             st.write("* No strategies executed yet. Submit choice criteria on the left.")
         else:
             for log in st.session_state.chosen_logs:
-                st.markdown(f"* **{log[0]}:** Selected {log[2]} Summary")
-                st.markdown(f"  * *Active Route Event:* {log[1]}")
-                st.markdown(f"  * *Executed Plan Details:* {log[3] if log[2] == 'Option 1' else log[4]}")
+                # FIXED: Unpack logs variables to display precise outcomes details inside right-hand logbook
+                st.markdown(f"* **{log[0]}:** Selected {log[2]}")
+                st.markdown(f"  * *Incident:* {log[1]}")
+                st.markdown(f"  * *Action:* {log[3] if log[2] == 'Option 1' else log[4]}")
 
-# --- PHASE 6: TEXT-BASED COMPARISON REPORT SUITE WITH HIGHLIGHT LOGIC ---
+# --- PHASE 6: FINAL TEXT-BASED COMPARISON REPORT SUITE WITH HIGHLIGHT LOGIC ---
 elif st.session_state.phase == 6:
     st.balloons()
     st.title("🏆 Cruise Completed! Your Final Cruise Report is ready for review.")
-    st.write("Review your corporate management metrics and final balance sheets below. Use the high-light decision table at the bottom to explain and evaluate your boardroom choices for your assignment.")
+    st.write("Review your corporate management metrics and final balance sheets below. Use the high-light decision log summary at the bottom to explain and evaluate your boardroom choices for your assignment.")
     st.write("---")
     
     col_rep1, col_rep2 = st.columns(2)
@@ -233,13 +242,13 @@ elif st.session_state.phase == 6:
         
         # Apply strict conditional highlighting based on student choice
         if selected_opt == "Option 1":
-            st.markdown(f"🧡 **:yellow[[CHOSEN CHOICE] Option 1: {opt1_desc}]**")
-            st.markdown(f"⚪ **Option 2:** {opt2_text_desc}")
+            st.markdown(f"🧡 **:yellow[[CHOSEN CHOICE] {opt1_desc}]**")
+            st.markdown(f"⚪ {opt2_text_desc}")
         else:
-            st.markdown(f"⚪ **Option 1:** {opt1_desc}")
-            st.markdown(f"🧡 **:yellow[[CHOSEN CHOICE] Option 2: {opt2_text_desc}]**")
+            st.markdown(f"⚪ {opt1_desc}")
+            st.markdown(f"🧡 **:yellow[[CHOSEN CHOICE] {opt2_text_desc}]**")
             
-        # Insert a explicit double break lines separator spacing block between rounds
+        # Insert explicit double break lines separator spacing block between rounds
         st.write("")
         st.write("")
         st.write("---")
