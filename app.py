@@ -1,7 +1,6 @@
 import streamlit as st
 import random
 
-# Force easy reading font styles across the application
 st.set_page_config(page_title="Cruise Board Game", layout="wide")
 st.markdown("""
     <style>
@@ -10,6 +9,12 @@ st.markdown("""
     }
     .stAlert {
         border-radius: 4px !important;
+        padding: 8px !important;
+        margin-bottom: 8px !important;
+    }
+    div[data-testid="stVerticalBlock"] > div {
+        margin-bottom: -10px !important;
+        padding-bottom: 0px !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -22,30 +27,21 @@ if 'game_state' not in st.session_state:
     }
 
 s = st.session_state.game_state
-st.title("🚢 Cruise Monopoly: Ship Manager Simulation Game")
+st.title("🚢 Cruise Monopoly: Ship Manager Game")
 st.write("---")
 
-# --- STEP 1: EASY CONFIGURATION INTERFACE ---
 if s['phase'] == 0:
     st.header("✍️ Step 1: Choose Your Group Number")
     st.info("💡 Your ship setup is auto-locked based on your Group Number to prevent copying!")
     
     group_choice = st.selectbox("Select Your Group Number (1-8):", ["Group 1", "Group 2", "Group 3", "Group 4", "Group 5", "Group 6", "Group 7", "Group 8"])
-    
-    g_idx = 0
-    if "2" in group_choice: g_idx = 1
-    elif "3" in group_choice: g_idx = 2
-    elif "4" in group_choice: g_idx = 3
-    elif "5" in group_choice: g_idx = 4
-    elif "6" in group_choice: g_idx = 5
-    elif "7" in group_choice: g_idx = 6
-    elif "8" in group_choice: g_idx = 7
+    g_idx = int(group_choice.split(" ")[1]) - 1
     
     ships = ["Starry Empress (Luxury Ship)", "Oceanic Voyager (Family Holiday Ship)", "Royal Sovereign (Mega-Resort Ship)", "Genting Splendor (Asian Style Resort Ship)", "Coral Majestic (Small Exploration Ship)", "Horizon Dragon (Hong Kong Premium Yacht)", "Atlantic Crown (Classic Ocean Liner)", "Pacific Pacific (Singapore Active Holiday Ship)"]
     durations = ["12-Day Mediterranean Trip", "14-Day Caribbean Holiday", "16-Day Long Ocean Crossing", "18-Day Southeast Asia Trip", "21-Day Long Cruise Route", "24-Day Big Asia Transit", "27-Day Coastline Tour", "29-Day Deep Wilderness Expedition"]
     themes = ["Gourmet Food & Spa Focus", "High-Energy Sports & Deck Parties", "History, Local Culture & Sightseeing", "Asian Michelin Dim Sum Food Tour", "Business Meetings & Tech Networking", "Lunar New Year Festival Cruise", "Big Family Vacation & Kids Activities", "Diving, Coral Reefs & Sea Nature"]
     routes = ["Miami ➔ Cozumel", "Seattle ➔ Juneau", "Barcelona ➔ Marseille", "Singapore ➔ Phuket", "Sydney ➔ Auckland", "Hong Kong ➔ Okinawa", "Copenhagen ➔ Helsinki", "Yokohama ➔ Keelung"]
-    markets = ["WESTERN Customers (Spends big money at bars/alcohol, wants slow lazy holiday)", "WESTERN Customers (Big families, spends money at casino/games, wants active fun)", "WESTERN Customers (Rich premium travelers, wants expensive fine dining restaurants)", "ASIAN Customers (Big multi-generation families, wants delicious food, demands 'Safety First' layout)", "WESTERN Customers (Adventure travelers, loves outdoor day tours at ports)", "ASIAN Customers (Hong Kong high-end rich shoppers, hates any time delays)", "WESTERN Customers (Older university alumni groups, wants quiet academic study lectures)", "ASIAN Customers (Singapore fly-cruise travelers, loves photography/nature tours)"]
+    markets = ["WESTERN Customers (Spends big money at bars/alcohol, wants slow lazy holiday)", "WESTERN Customers (Big families, spends money at casino/games, wants active fun)", "WESTERN Customers (Rich premium travelers, wants expensive fine dining restaurants)", "ASIAN Customers (Big multi-generation families, wants delicious food, demands 'Safety First' layout)", "WESTERN Customers (Adventure travelers, loves outdoor day tours at ports)", "ASIAN Customers (Hong Kong high-end rich shoppers, hates any time delays)", "WESTERN Customers (Older university alumni groups, wants quiet academic study lectures)", "ASIAN Market (Singapore fly-cruise segment, active wildlife/photography focus)"]
 
     s.update({'group': group_choice, 'brand': ships[g_idx], 'days': durations[g_idx], 'theme': themes[g_idx], 'route': routes[g_idx], 'market': markets[g_idx], 'verification_id': f"CODE-G{g_idx+1}-{random.randint(100,999)}"})
 
@@ -61,77 +57,94 @@ if s['phase'] == 0:
         s['history'].extend([f"🚢 MANIFEST LOCKED FOR {s['group']} ({s['verification_id']})", f"• Market Segment: {s['market']}", f"• Route: {s['route']} | Focus: {s['theme']}"])
         st.rerun()
 
-# --- STEP 2: SIMPLIFIED CORE BOARD GAME LOOP ---
 elif 1 <= s['phase'] <= 3:
     st.markdown(f"### 📊 Dashboard Status | {s['group']}")
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("💰 Current Money left", f"${s['cash']:,}")
-    c2.metric("👥 Onboard Passengers", f"{s['passengers']:,} People")
-    c3.metric("🏥 Sick / Injured People", f"{s['injured']} Sick", delta=f"+{s['injured']}" if s['injured'] > 0 else None, delta_color="inverse")
-    c4.metric("💀 Dead Passengers", f"{s['dead']} Dead", delta=f"+{s['dead']}" if s['dead'] > 0 else None, delta_color="inverse")
+    c1.metric("💰 Money left", f"${s['cash']:,}")
+    c2.metric("👥 Passengers", f"{s['passengers']:,} Pax")
+    c3.metric("🏥 Sick/Injured", f"{s['injured']} Sick", delta=f"+{s['injured']}" if s['injured'] > 0 else None, delta_color="inverse")
+    c4.metric("💀 Deaths", f"{s['dead']} Dead", delta=f"+{s['dead']}" if s['dead'] > 0 else None, delta_color="inverse")
 
     st.write("---")
     col_left, col_right = st.columns(2)
 
     with col_left:
-        st.subheader(f"🎲 Game Progress: Step {s['phase']} / 3 Rounds")
+        st.subheader(f"🎲 Step {s['phase']} / 3 Rounds")
         if not s['dice_rolled']:
             if st.button("🎲 Click Here to Roll the Dice", type="primary", use_container_width=True):
                 s['current_roll'], s['dice_rolled'] = random.randint(1, 6), True
                 st.rerun()
         else:
-            st.success(f"🎲 Dice Roll: You got {s['current_roll']}! Ship moves forward...")
             is_asian = "ASIAN" in s['market']
-            
             CARDS = [
                 {
                     "title": "BAD WEATHER: Big Storm Coming", 
                     "desc": "A dangerous Category 5 hurricane is blocking your ship's route.", 
-                    "h": "Real Case: Hurricane Dorian (2019). Western guests stay happy inside bars/casinos during rough seas. Asian guests demand high safety protocols; scary waves will make them leave terrible reviews.", 
+                    "h": "Hurricane Dorian (2019). Western bars/casinos remain highly profitable. Asian markets exhibit a strict collectivist safety expectation.", 
                     "emoji": "⛈️ 🌊 🌪️", 
-                    "o1": "Choice 1: [Option 1] Safety First: Spend money to sail around the storm. (Result: 0 people get hurt, but you lose fuel money -$6,000)", 
-                    "o2": "Choice 2: [Option 2] Save Money: Drive straight through the storm at max speed. (Result: Saves fuel. But waves shake the ship, causing 85 people to fall and break bones. On Asian routes, angry guests boycott shops, costing an extra -$2,000)" if is_asian else "Choice 2: [Option 2] Save Money: Drive straight through the storm at max speed. (Result: Saves fuel. But waves shake the ship, causing 85 people to fall and break bones, costing -$2,000 in medical lawsuits)", 
+                    "o1": "Choice 1: Safety Detour around storm. (0 hurt, fuel spikes -$6,000)", 
+                    "o2": "Choice 2: Save Fuel money and run at full speed. (85 fallback injuries. Asian retail boycotts cost an extra -$2,000)" if is_asian else "Choice 2: Save Fuel money and run at full speed. (85 fallback injuries, -$2,000 legal damages)", 
                     "m1": -6000, "i1": 0, "d1": 0, "m2": -4000 if is_asian else -2000, "i2": 85, "d2": 0
                 },
                 {
                     "title": "MEDICAL EMERGENCY: Sickness Outbreak on Board", 
-                    "desc": "A highly contagious stomach virus (Norovirus) spreads quickly through the main restaurants.", 
-                    "h": "Real Case: Oasis of the Seas (2019) where 470+ guests fell ill in 48 hours. Western guests hate room lockdown and demand free alcohol. Asian routes feature older grandparents vulnerable to deaths if ignored.", 
+                    "desc": "A contagious gastrointestinal virus spreads rapidly inside buffet dining rooms.", 
+                    "h": "Oasis of the Seas (2019). Western cabins reject quarantine locks. Asian generational densities spark severe fatalities if ignored.", 
                     "emoji": "🏥 🤢 💊", 
-                    "o1": "Choice 1: [Option 1] Lockdown Strategy: Force all passengers to stay inside rooms. (Result: Contained. Only 120 people get sick, 0 deaths. Western routes demand refunds costing -$20,000; Asian routes follow rules easily, costing -$12,000)", 
-                    "o2": "Choice 2: [Option 2] Keep Running: Hide the truth and keep theaters open to protect shop revenue. (Result: Outbreak explodes! 450 people get sick. On Asian routes with many grandparents, 4 elderly people die with a massive -$35,000 fine; Western routes report 1 death and -$22,000 penalty)", 
+                    "o1": "Choice 1: Force in-cabin quarantine. (120 sick, 0 deaths. Western refunds cost -$20,000; Asian lines cooperate at -$12,000)", 
+                    "o2": "Choice 2: Keep theater/public spaces open. (450 sick. Asian family structures report 4 elderly deaths, -$35,000 fine; Western costs -$22,000)", 
                     "m1": -12000 if is_asian else -20000, "i1": 120, "d1": 0, "m2": -35000 if is_asian else -22000, "i2": 450, "d2": 4 if is_asian else 1
                 },
                 {
                     "title": "BIG BUSINESS OPPORTUNITY: Shopping Gala Offer", 
-                    "desc": "A giant luxury retail company offers to rent out your main deck tonight for a VIP shopping party.", 
-                    "h": "Real Case: Fleet Charters. Western guests prefer casual areas, but Asian cruise routes make massive profit margins from duty-free luxury shops and casino spending.", 
+                    "desc": "A luxury retail company requests to lease public decks tonight for a VIP shopping party.", 
+                    "h": "Fleet Charter data. Asian routes generate massive net auxiliary margins from luxury spending over casual Western itineraries.", 
                     "emoji": "💎 💰 🎰", 
-                    "o1": "Choice 1: [Option 1] Make a Deal: Accept the corporate lease contract. (Result: On Asian routes, rich guests buy a lot, giving you a huge bonus of +$35,000! Western routes generate +$20,000)", 
-                    "o2": "Choice 2: [Option 2] Decline Deal: Keep spaces free so regular guests can walk around. (Result: Guests are comfortable, but you get +$0 extra cash)", 
+                    "o1": "Choice 1: Accept VIP contract. (Asian shopping surges net revenues by +$35,000; Western assets capture +$20,000)", 
+                    "o2": "Choice 2: Decline deal to keep public transit spaces free. (Yields $0 cash injection)", 
                     "m1": 35000 if is_asian else 20000, "i1": 0, "d1": 0, "m2": 0, "i2": 0, "d2": 0
                 }
             ]
             
-            g_num_val = 1
-            if "2" in s['group']: g_num_val = 2
-            elif "3" in s['group']: g_num_val = 3
-            elif "4" in s['group']: g_num_val = 4
-            elif "5" in s['group']: g_num_val = 5
-            elif "6" in s['group']: g_num_val = 6
-            elif "7" in s['group']: g_num_val = 7
-            elif "8" in s['group']: g_num_val = 8
-            
+            g_num_val = int(s['group'].split(" ")[1])
             random.seed(g_num_val + 88)
             shuffled_cards = list(CARDS)
             random.shuffle(shuffled_cards)
             c = shuffled_cards[s['phase'] - 1]
             
-            # Display current event
-            st.markdown(f"## 📋 {c['title']}")
-            st.markdown(f"<div style='font-size: 80px; text-align: left; padding: 10px 0;'>{c['emoji']}</div>", unsafe_allow_html=True)
-            st.markdown(f"🌍 **Your Passenger Profile:** **`{s['market']}`**")
-            st.write(f"💬 **What is happening:** {c['desc']}")
-            st.caption(f"📌 *Real History Reference: {c['h']}*")
-            
+            st.markdown(f"### {c['emoji']} {c['title']}")
+            st.write(f"🌍 **Passenger Profile:** `{s['market']}`")
+            st.write(f"💬 **Current Situation:** {c['desc']}")
+            st.caption(f"📌 *Case History: {c['h']}*")
             st.write("---")
+            
+            st.success(f"👉 **{c['o1']}**")
+            st.success(f"👉 **{c['o2']}**")
+            
+            if st.button("🔴 Choose Option 1", use_container_width=True):
+                s['cash'] += c['m1']; s['injured'] += c['i1']; s['dead'] += c['d1']
+                s['history'].append(f"Phase {s['phase']} - Option 1 Selected | Money: ${c['m1']:,} | Injured: +{c['i1']} | Deaths: +{c['d1']}")
+                s['phase'] += 1; s['dice_rolled'] = False; st.rerun()
+            if st.button("🔵 Choose Option 2", use_container_width=True):
+                s['cash'] += c['m2']; s['injured'] += c['i2']; s['dead'] += c['d2']
+                s['history'].append(f"Phase {s['phase']} - Option 2 Selected | Money: ${c['m2']:,} | Injured: +{c['i2']} | Deaths: +{c['d2']}")
+                s['phase'] += 1; s['dice_rolled'] = False; st.rerun()
+
+    with col_right:
+        st.subheader("📜 Live Ship Logbook Record")
+        for log in s['history']: st.write(f"- {log}")
+
+else:
+    st.balloons()
+    st.header("🏁 Game Finished: Final Audit Report")
+    st.write(f"🔒 **Security Code:** `{s['verification_id']}` | **Your Market:** `{s['market']}`")
+    st.write("---")
+    c1, c2, c3 = st.columns(3)
+    c1.metric("🏁 Final Money Balance", f"${s['cash']:,}")
+    c2.metric("🏥 Total Sick / Injured Pax", f"{s['injured']} People")
+    c3.metric("💀 Total Passenger Deaths", f"{s['dead']} Deaths")
+    st.write("---")
+    log_text = "\n".join(s['history']) + f"\n\n[RESULTS] {s['group']} ({s['verification_id']}) | Money: ${s['cash']:,} | Injured: {s['injured']} | Deaths: {s['dead']}"
+    st.text_area("Select and copy all text below:", value=log_text, height=200)
+    if st.button("🔄 Reset Game (Play Again)", use_container_width=True):
+        st.session_state.clear()
