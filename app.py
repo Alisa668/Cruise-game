@@ -43,7 +43,7 @@ GROUP_DATA = {
     "Group 8": {"brand": "Pacific Pacific", "duration": "29-Day Deep Wilderness Expedition", "theme": "Diving, Coral Reefs & Sea Nature", "market": "ASIAN", "map": "Japan Yokohama -> Sailing North Pacific -> Taiwan Keelung"}
 }
 
-# --- PHASE 0: CORPORATE INITIAL REGISTRATION Front Page ---
+# --- PHASE 0: INITIAL GROUP REGISTRATION FRONT PAGE ---
 if st.session_state.phase == 0:
     st.header("Step 1: Choose Your Group Number")
     group_choice = st.selectbox("Select Your Group Number (1-8):", list(GROUP_DATA.keys()))
@@ -67,7 +67,7 @@ if st.session_state.phase == 0:
         st.session_state.phase = 1
         st.rerun()
 
-# --- PHASE 1 - 5: SIMULATION BALLOT INTERACTIVE CORE ---
+# --- PHASE 1 - 5: BOARDROOM INTERACTIVE SCENARIOS ---
 elif 1 <= st.session_state.phase <= 5:
     st.markdown(f"### Scoreboard | {st.session_state.group} Active Profile")
     c1, c2, c3, c4 = st.columns(4)
@@ -83,13 +83,13 @@ elif 1 <= st.session_state.phase <= 5:
         st.subheader(f"Round {st.session_state.phase} / 5")
         is_asian = st.session_state.market == "ASIAN"
         
-        # Completely Flattened Scenario Logic (Zero Nested If-Statements)
+        # Static matrix assignment to bypass dynamic formatting crashes entirely
         if st.session_state.phase == 1:
             title = "BAD WEATHER: Big Storm Coming"
             desc = "A dangerous Category 5 hurricane blocks your ship's direct route."
             emoji = "[STORM]"
-            o1_text = "Safety Detour around storm. (0 dead, fuel costs spikes -$15,000, keeps passengers happy)"
-            o2_text = "Save fuel money and run through edge at full speed. (Cost spikes -$12,000 due to minor boycotts, 140 severe injuries, 0 dead)" if is_asian else "Save fuel money and run through edge at full speed. (Lawsuit settlement costs -$11,000, 155 injuries, 1 elderly cardiac death)"
+            o1_text = "Safety Detour around storm. (Cost: -15000, Injuries: 0, Deaths: 0)"
+            o2_text = "Run through edge at full speed. (Cost: -12000, Injuries: 140, Deaths: 0)" if is_asian else "Run through edge at full speed. (Cost: -11000, Injuries: 155, Deaths: 1)"
             m1_val, i1_val, d1_val = -15000, 0, 0
             m2_val = -12000 if is_asian else -11000
             i2_val = 140 if is_asian else 155
@@ -99,8 +99,8 @@ elif 1 <= st.session_state.phase <= 5:
             title = "MEDICAL EMERGENCY: Sickness Outbreak on Board"
             desc = "A contagious gastrointestinal virus spreads rapidly inside buffet dining rooms."
             emoji = "[MEDICAL]"
-            o1_text = "Force strict in-cabin quarantine immediately. (Passenger complaints cost -$18,000 refunds, 60 sick, 0 dead)" if is_asian else "Force strict in-cabin quarantine immediately. (Western customer refund storm costs -$25,000, 80 sick, 0 dead)"
-            o2_text = "Keep public dining and spaces open to save face. (Massive contagion, 420 sick, 5 critical elderly deaths, -$22,000 medical fine)" if is_asian else "Keep public dining and spaces open to save face. (Contagion grows, 310 sick, 2 deaths, Class-action lawsuit settlement costs -$21,000)"
+            o1_text = "Force strict in-cabin quarantine. (Cost: -18000, Injuries: 60, Deaths: 0)" if is_asian else "Force strict in-cabin quarantine. (Cost: -25000, Injuries: 80, Deaths: 0)"
+            o2_text = "Keep public dining areas open. (Cost: -22000, Injuries: 420, Deaths: 5)" if is_asian else "Keep public dining areas open. (Cost: -21000, Injuries: 310, Deaths: 2)"
             m1_val = -18000 if is_asian else -25000
             i1_val = 60 if is_asian else 80
             d1_val = 0
@@ -112,8 +112,8 @@ elif 1 <= st.session_state.phase <= 5:
             title = "BIG BUSINESS OPPORTUNITY: Shopping Gala Offer"
             desc = "A luxury retail company requests to lease public decks tonight for a VIP shopping party."
             emoji = "[RETAIL]"
-            o1_text = "Accept VIP contract. (Shopping turnover nets large revenue +$35,000, but public area congestion causes 20 minor trip injuries)" if is_asian else "Accept VIP contract. (Western asset brand deal captures revenue +$22,000, crowd crush causes 15 minor shoulder injuries)"
-            o2_text = "Decline deal to keep transit spaces free. (Revenue stays at +$4,000 general paths, 0 injuries, 0 dead)"
+            o1_text = "Accept VIP contract layout. (Revenue: +35000, Injuries: 20, Deaths: 0)" if is_asian else "Accept VIP contract layout. (Revenue: +22000, Injuries: 15, Deaths: 0)"
+            o2_text = "Decline deal completely. (Revenue: +4000, Injuries: 0, Deaths: 0)"
             m1_val = 35000 if is_asian else 22000
             i1_val = 20 if is_asian else 15
             d1_val = 0
@@ -123,8 +123,8 @@ elif 1 <= st.session_state.phase <= 5:
             title = "ENVIRONMENTAL CRISIS: Deep Sea Oil Leakage Risk"
             desc = "Engineers notice minor fuel oil leakage near a marine sanctuary zone. Repair requires pausing the voyage."
             emoji = "[ECO_RISK]"
-            o1_text = "Emergency Stop for instant mid-sea repair. (Parts and schedule delay cost -$19,000, 0 injured, 0 dead)"
-            o2_text = "Ignore warning and dump residue quietly to maintain speed. (Local coastal defense fines cost -$17,500, toxic vapor causes 90 severe nauseous crew injuries, 0 dead)" if is_asian else "Ignore warning and dump residue quietly to maintain speed. (International environmental fines cost -$16,000, chemical reaction causes engine combustion: 110 burns, 3 deaths)"
+            o1_text = "Emergency Stop for repair. (Cost: -19000, Injuries: 0, Deaths: 0)"
+            o2_text = "Ignore warning to maintain speed. (Cost: -17500, Injuries: 90, Deaths: 0)" if is_asian else "Ignore warning to maintain speed. (Cost: -16000, Injuries: 110, Deaths: 3)"
             m1_val, i1_val, d1_val = -19000, 0, 0
             m2_val = -17500 if is_asian else -16000
             i2_val = 90 if is_asian else 110
@@ -134,7 +134,25 @@ elif 1 <= st.session_state.phase <= 5:
             title = "BOARDROOM SCANDAL: VIP Casino Fraud Accusation"
             desc = "A high-net-worth VIP whale accuses your ship dealers of running rigged card decks."
             emoji = "[SCANDAL]"
-            o1_text = "Pay hush money instantly to settle privately. (Discreet cost -$24,000, logo stays clean, 0 injured, 0 dead)" if is_asian else "Pay hush money instantly to settle privately. (Discreet cost -$23,000, avoids legal battles, 0 injured, 0 dead)"
-            o2_text = "Refuse payment and challenge them publicly. (Media smear triggers panic, casino stampede causes 130 injuries, 1 security guard death, market asset drop costs -$26,000)" if is_asian else "Refuse payment and challenge them publicly. (Court battle costs -$24,500, angry VIP bodyguard altercation causes 45 injuries, 2 bystander deaths)"
+            o1_text = "Pay hush money to settle privately. (Cost: -24000, Injuries: 0, Deaths: 0)" if is_asian else "Pay hush money to settle privately. (Cost: -23000, Injuries: 0, Deaths: 0)"
+            o2_text = "Refuse payment and challenge publicly. (Cost: -26000, Injuries: 130, Deaths: 1)" if is_asian else "Refuse payment and challenge publicly. (Cost: -24500, Injuries: 45, Deaths: 2)"
             m1_val = -24000 if is_asian else -23000
             i1_val, d1_val = 0, 0
+            m2_val = -26000 if is_asian else -24500
+            i2_val = 130 if is_asian else 45
+            d2_val = 1 if is_asian else 2
+
+        # Display situational details clearly
+        st.markdown(f"### {emoji} {title}")
+        st.write(f"Situation Overview: {desc}")
+        st.write("---")
+        st.write("### Review Options Carefully:")
+        st.info(f"Option 1: {o1_text}")
+        st.info(f"Option 2: {o2_text}")
+        
+        # Consolidated standard ballot submission container
+        with st.form(key=f"ballot_submission_form_ph_{st.session_state.phase}"):
+            user_choice = st.radio("Select your choice:", ["Option 1", "Option 2"], key=f"user_radio_select_{st.session_state.phase}")
+            confirm_btn = st.form_submit_button("Confirm the decision and run it", type="primary", use_container_width=True)
+            
+            if confirm_btn:
