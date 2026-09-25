@@ -38,7 +38,7 @@ GROUP_DATA = {
     "Group 3": {"brand": "Royal Sovereign", "duration": "16-Day Long Ocean Crossing", "theme": "History, Local Culture & Sightseeing", "market": "WESTERN Market (Rich premium travelers, fine dining)", "map": "🇪🇸 Barcelona ➔ 🌊 (Sailing Mediterranean Sea) ➔ 🇫🇷 Marseille"},
     "Group 4": {"brand": "Genting Splendor", "duration": "18-Day Southeast Asia Trip", "theme": "Asian Michelin Dim Sum Food Tour", "market": "ASIAN Market (Big families, delicious food, Safety First)", "map": "🇸🇬 Singapore Base ➔ 🌊 (Sailing Andaman Sea) ➔ 🇹🇭 Phuket"},
     "Group 5": {"brand": "Coral Majestic", "duration": "21-Day Long Cruise Route", "theme": "Business Meetings & Tech Networking", "market": "WESTERN Market (Adventure travelers, loves outdoor tours)", "map": "🇦🇺 Sydney ➔ 🌊 (Sailing Tasman Sea) ➔ 🇳🇿 Auckland"},
-    "Group 6": {"brand": "Horizon Dragon", "duration": "24-Day Big Asia Transit", "theme": "Lunar New Year Festival Cruise", "market": "ASIAN Market (Hong Kong high-end rich shoppers, hates delays)", "map": "🇭🇰 Hong Kong Base ➔ 🌊 (Sailing East China Sea) ➔ 🇯🇵 Okinawa"},
+    "Group 6": {"brand": "Horizon Dragon", "duration": "24-Day Big Asia Transit", "theme": "Lunar New Year Festival Cruise", "market": "ASIAN Market (Hong Hong high-end rich shoppers, hates delays)", "map": "🇭🇰 Hong Kong Base ➔ 🌊 (Sailing East China Sea) ➔ 🇯🇵 Okinawa"},
     "Group 7": {"brand": "Atlantic Crown", "duration": "27-Day Coastline Tour", "theme": "Big Family Vacation & Kids Activities", "market": "WESTERN Market (Older alumni groups, wants lectures)", "map": "🇩🇰 Copenhagen ➔ 🌊 (Sailing Baltic Sea) ➔ 🇫🇮 Helsinki"},
     "Group 8": {"brand": "Pacific Pacific", "duration": "29-Day Deep Wilderness Expedition", "theme": "Diving, Coral Reefs & Sea Nature", "market": "ASIAN Market (Singapore segment, wildlife photography tours)", "map": "🇯🇵 Yokohama ➔ 🌊 (Sailing North Pacific) ➔ 🇹🇼 Keelung"}
 }
@@ -152,7 +152,7 @@ elif 1 <= st.session_state.phase <= 3:
                 st.session_state.phase += 1
                 st.rerun()
 
-    # 右側隨時動態同步該組別資料
+    # 右側資訊欄：移除有風險的複雜縮排，保證運行無誤
     with col_right:
         st.subheader("📋 Cruise Live Logbook Status")
         st.markdown(f"**🚢 Vessel ID:** `{st.session_state.v_id}`")
@@ -161,8 +161,8 @@ elif 1 <= st.session_state.phase <= 3:
         st.markdown(f"**🗺️ Route:** {st.session_state.route}")
         st.markdown(f"**👥 Target Market:** {st.session_state.market}")
         st.write("---")
-        
         st.write("📈 **Round Decisions Tracked So Far:**")
+        
         if not st.session_state.chosen_logs:
             st.write("* No strategies executed yet. Complete the current active decision.")
-        else:
+        
