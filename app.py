@@ -103,12 +103,11 @@ elif 1 <= st.session_state.phase <= 3:
         st.info(f"👉 **Option 1:** {c['o1']}")
         st.info(f"👉 **Option 2:** {c['o2']}")
         
-        # Wrapping selection and button inside a neat Streamlit Form fixes the Round 1 submission lock!
         with st.form(key=f"boardroom_form_ph_{st.session_state.phase}"):
             st.write("### 🗔 Cast Your Boardroom Decision Below:")
             user_choice = st.radio("Select your strategy choice:", ["Option 1", "Option 2"], key=f"radio_choice_{st.session_state.phase}")
-            
             st.write("---")
+            
             confirm_btn = st.form_submit_button("🚀 Confirm the decision and run it", type="primary", use_container_width=True)
             
             if confirm_btn:
@@ -127,6 +126,8 @@ elif 1 <= st.session_state.phase <= 3:
                 st.session_state.injured += chosen_injury
                 st.session_state.dead += chosen_death
                 
-                # Append choice data arrays securely
-                st.session_state.chosen_logs.append({
-                    "round": st.session_state.phase,
+                # Separate out log dictionary elements cleanly to fix syntax parameters
+                log_entry = {
+                    "round": int(st.session_state.phase),
+                    "title": str(c['title']),
+                    "choice_made": str(user_choice),
