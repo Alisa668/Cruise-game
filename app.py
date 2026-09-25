@@ -18,8 +18,17 @@ if s['phase'] == 0:
     st.header("✍️ Step 1: Initialize Vessel Profile & Itinerary Parameters")
     st.info("💡 Plagiarism Prevention: Profiles are custom-locked to your unique Group Number!")
     
-    group_choice = st.selectbox("Select Your Assigned Group Number (1-8):", [f"Group {i}" for i in range(1, 9)])
-    g_idx = int(group_choice.split(" ")) - 1
+    group_choice = st.selectbox("Select Your Assigned Group Number (1-8):", ["Group 1", "Group 2", "Group 3", "Group 4", "Group 5", "Group 6", "Group 7", "Group 8"])
+    
+    # Safe index mapping without string splitting issues
+    g_idx = 0
+    if "2" in group_choice: g_idx = 1
+    elif "3" in group_choice: g_idx = 2
+    elif "4" in group_choice: g_idx = 3
+    elif "5" in group_choice: g_idx = 4
+    elif "6" in group_choice: g_idx = 5
+    elif "7" in group_choice: g_idx = 6
+    elif "8" in group_choice: g_idx = 7
     
     ships = ["Starry Empress (Western Luxury)", "Oceanic Voyager (Western Family)", "Royal Sovereign (Western Resort)", "Genting Splendor (Asian Resort)", "Coral Majestic (Western Explorer)", "Horizon Dragon (Hong Kong Luxury Yacht)", "Atlantic Crown (Classic Transatlantic)", "Pacific Pacific (Singapore Expedition)"]
     durations = ["12-Day Med Exploration", "14-Day Grand Caribbean", "16-Day Transoceanic", "18-Day Southeast Asian Tropical", "21-Day Relocation Route", "24-Day East Asia Transit", "27-Day Coastline Explorer", "29-Day Asia-Pacific Expedition"]
@@ -44,7 +53,7 @@ if s['phase'] == 0:
 elif 1 <= s['phase'] <= 3:
     st.markdown(f"### 📊 Scoreboard | {s['group']} Active Profile")
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("💰 Cash Asset Balance", f"\${s['cash']:,}")
+    c1.metric("💰 Cash Asset Balance", f"${s['cash']:,}")
     c2.metric("👥 Active Onboard Passengers", f"{s['passengers']:,} Pax")
     c3.metric("🏥 Total Sick / Injured Pax", f"{s['injured']} Pax", delta=f"+{s['injured']}" if s['injured'] > 0 else None, delta_color="inverse")
     c4.metric("💀 Cumulative Fatalities", f"{s['dead']} Dead", delta=f"+{s['dead']}" if s['dead'] > 0 else None, delta_color="inverse")
@@ -67,38 +76,49 @@ elif 1 <= s['phase'] <= 3:
                     "title": "🚨 WEATHER: Severe Storm Path Entry", 
                     "desc": "A category 5 storm blocks your direct path.", 
                     "h": "Hurricane Dorian (2019). Western markets handle sea rolling well. Asian markets expect safety-first protocols.", 
-                    "img": "⛈️",
-                    "o1": "【Option 1】Safety Protocol: Execute regional detour. (0 casualties, fuel spikes -\$6,000)", 
-                    "o2": "【Option 2】Schedule Lock: Run ahead of the wind at max speed. (Saves cash, but 85 pax slip injuries. On Asian routes, lost retail costs an extra -\$2,000)", 
+                    "img_url": "https://unsplash.com", # Storm illustration
+                    "o1": "【Option 1】Safety Protocol: Execute regional detour. (0 casualties, fuel spikes -$6,000)", 
+                    "o2": "【Option 2】Schedule Lock: Run ahead of the wind at max speed. (Saves cash, but 85 pax slip injuries. On Asian routes, lost retail costs an extra -$2,000)", 
                     "m1": -6000, "i1": 0, "d1": 0, "m2": -4000 if is_asian else -2000, "i2": 85, "d2": 0
                 },
                 {
                     "title": "🚨 MEDICAL: Onboard Norovirus Gastro Epidemic", 
                     "desc": "A contagious gastrointestinal virus breaks loose within the main dining layout sections.", 
                     "h": "Oasis of the Seas (2019). Western guests demand heavy bar compensations if locked down. Asian routes feature older families vulnerable to fatalities if ignored.", 
-                    "img": "🏥",
-                    "o1": "【Option 1】Isolate Vessel: Mandatory in-cabin quarantine. (120 sick pax, 0 deaths. Western complaints cost -\$20,000; Asian collectivism costs -\$12,000)", 
-                    "o2": "【Option 2】Maintain Operations: Keep spaces open to save retail revenue. (450 pax infected. Asian multi-generational densities trigger 4 high-risk elderly deaths and -\$35,000 fine; Western costs -\$22,000)", 
+                    "img_url": "https://unsplash.com", # Hospital illustration
+                    "o1": "【Option 1】Isolate Vessel: Mandatory in-cabin quarantine. (120 sick pax, 0 deaths. Western complaints cost -$20,000; Asian collectivism costs -$12,000)", 
+                    "o2": "【Option 2】Maintain Operations: Keep spaces open to save retail revenue. (450 pax infected. Asian multi-generational densities trigger 4 high-risk elderly deaths and -$35,000 fine; Western costs -$22,000)", 
                     "m1": -12000 if is_asian else -20000, "i1": 120, "d1": 0, "m2": -35000 if is_asian else -22000, "i2": 450, "d2": 4 if is_asian else 1
                 },
                 {
                     "title": "🌟 STRATEGIC OPPORTUNITY: High-Margin Premium Charter Proposal", 
                     "desc": "A luxury retail conglomerate requests to lease your public decks tonight for a VIP shopping gala.", 
                     "h": "Corporate charter data. Asian cruise markets generate much higher profit margins from duty-free luxury spending compared to Western casual vacationers.", 
-                    "img": "💰",
-                    "o1": "【Option 1】Commercial Deal: Accept VIP contract. (Asian routes trigger shopping surge of +\$35,000; Western routes generate +\$20,000)", 
-                    "o2": "【Option 2】Consumer Protection: Decline contract to keep public walking spaces open. (Yields \$0 cash injection)", 
+                    "img_url": "https://unsplash.com", # Luxury Event illustration
+                    "o1": "【Option 1】Commercial Deal: Accept VIP contract. (Asian routes trigger shopping surge of +$35,000; Western routes generate +$20,000)", 
+                    "o2": "【Option 2】Consumer Protection: Decline contract to keep public walking spaces open. (Yields $0 cash injection)", 
                     "m1": 35000 if is_asian else 20000, "i1": 0, "d1": 0, "m2": 0, "i2": 0, "d2": 0
                 }
             ]
             
-            random.seed(int(s['group'].split(" ")) + 88)
+            # Map group number correctly for shuffling
+            g_num_val = 1
+            if "2" in s['group']: g_num_val = 2
+            elif "3" in s['group']: g_num_val = 3
+            elif "4" in s['group']: g_num_val = 4
+            elif "5" in s['group']: g_num_val = 5
+            elif "6" in s['group']: g_num_val = 6
+            elif "7" in s['group']: g_num_val = 7
+            elif "8" in s['group']: g_num_val = 8
+            
+            random.seed(g_num_val + 88)
             shuffled_cards = list(CARDS)
             random.shuffle(shuffled_cards)
             c = shuffled_cards[s['phase'] - 1]
             
-            # Rendering Visual Elements & Anime Placeholders
-            st.markdown(f"## {c['img']} {c['title']}")
+            # Rendering Visual elements with Real Illustration Images
+            st.markdown(f"## 📋 {c['title']}")
+            st.image(c['img_url'], width=500)  # Adds the actual image to the website card
             st.markdown(f"🌍 **Target Market Profile:** **`{s['market']}`**")
             st.write(f"💬 **Current Incident Vector:** {c['desc']}")
             st.caption(f"📌 *Benchmark Case Study: {c['h']}*")
@@ -112,29 +132,7 @@ elif 1 <= s['phase'] <= 3:
             col_b1, col_b2 = st.columns(2)
             if col_b1.button("🔴 Choose Option 1", use_container_width=True):
                 s['cash'] += c['m1']; s['injured'] += c['i1']; s['dead'] += c['d1']
-                s['history'].append(f"Phase {s['phase']} - Option 1 Selected | Cash: \${c['m1']:,} | Sick/Injured: +{c['i1']} | Deaths: +{c['d1']}")
+                s['history'].append(f"Phase {s['phase']} - Option 1 Selected | Cash: ${c['m1']:,} | Sick/Injured: +{c['i1']} | Deaths: +{c['d1']}")
                 s['phase'] += 1; s['dice_rolled'] = False; st.rerun()
             if col_b2.button("🔵 Choose Option 2", use_container_width=True):
                 s['cash'] += c['m2']; s['injured'] += c['i2']; s['dead'] += c['d2']
-                s['history'].append(f"Phase {s['phase']} - Option 2 Selected | Cash: \${c['m2']:,} | Sick/Injured: +{c['i2']} | Deaths: +{c['d2']}")
-                s['phase'] += 1; s['dice_rolled'] = False; st.rerun()
-
-    with col_right:
-        st.subheader("📜 Live Navigation Logbook Record")
-        for log in s['history']: st.write(f"- {log}")
-
-else:
-    st.balloons()
-    st.header("🏁 Voyage Concluded: Official Operations Audit Report")
-    st.write(f"🔒 **Anti-Tamper Session Security ID:** `{s['verification_id']}` | **Market Context:** `{s['market']}`")
-    st.write("---")
-    c1, c2, c3 = st.columns(3)
-    c1.metric("🏁 Final Net Asset Cash", f"\${s['cash']:,}")
-    c2.metric("🏥 Cumulative Sick/Injured", f"{s['injured']} Pax")
-    c3.metric("💀 Cumulative Fatalities", f"{s['dead']} Dead")
-    st.write("---")
-    log_text = "\n".join(s['history']) + f"\n\n[AUDIT FINGERPRINT] {s['group']} ({s['verification_id']}) | Cash: \${s['cash']:,} | Injuries: {s['injured']} | Fatalities: {s['dead']}"
-    st.text_area("Select and Copy log block below:", value=log_text, height=200)
-    if st.button("🔄 Reset Simulator (New Session)", use_container_width=True):
-        st.session_state.clear()
-        st.rerun()
