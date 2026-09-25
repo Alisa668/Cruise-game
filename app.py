@@ -4,46 +4,56 @@ import random
 # Global Page Configurations
 st.set_page_config(page_title="Cruise Boardroom Monopoly", layout="wide")
 
-# Injecting Cruise Monopoly Board Theme Styles and Matrix Layout directly
+# Injecting Monopoly Board Game Boardroom Layout directly
 st.markdown("""
     <style>
-    /* Theme background with an elegant dark nautical grid aesthetic */
+    /* Dark Ocean Board Game Master Theme */
     .stApp {
-        background-color: #0d1b2a !important;
-        background-image: 
-            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px) !important;
-        background-size: 40px 40px !important;
+        background-color: #0B132B !important;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.05) 2px, transparent 0) !important;
+        background-size: 30px 30px !important;
     }
     
-    /* Clean custom card elements */
-    .game-card {
-        background: rgba(27, 38, 59, 0.85) !important;
-        border: 2px solid #415a77 !important;
-        border-radius: 12px !important;
+    /* Left Panel: Crimson Red Monopoly Property Board Card Styling */
+    .board-card-left {
+        background-color: #1C2541 !important;
+        border-top: 12px solid #D90429 !important;
+        border-left: 2px solid #48CAE4 !important;
+        border-right: 2px solid #48CAE4 !important;
+        border-bottom: 2px solid #48CAE4 !important;
+        border-radius: 8px !important;
         padding: 24px !important;
         margin-bottom: 20px !important;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5) !important;
     }
     
-    /* Global clean font typography rules override */
-    html, body, [data-testid="stMarkdownContainer"], p, span, div, h1, h2, h3 {
-        font-family: 'Segoe UI', Arial, sans-serif !important;
-        color: #e0e1dd !important;
-    }
-    
-    h1, h2, h4 {
-        color: #00b4d8 !important;
-        font-weight: bold !important;
-    }
-    
-    /* Scoreboard styling updates */
-    .metric-box {
-        background: #1b263b !important;
-        border: 1px solid #00b4d8 !important;
+    /* Right Panel: Golden Yellow Community Ledger Card Styling */
+    .board-card-right {
+        background-color: #1C2541 !important;
+        border-top: 12px solid #FFB703 !important;
+        border-left: 2px solid #FFB703 !important;
+        border-right: 2px solid #FFB703 !important;
+        border-bottom: 2px solid #FFB703 !important;
         border-radius: 8px !important;
-        padding: 10px !important;
-        text-align: center !important;
+        padding: 24px !important;
+        margin-bottom: 20px !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5) !important;
+    }
+    
+    /* Universal clear font typography rules */
+    html, body, [data-testid="stMarkdownContainer"], p, span, div, h1, h2, h3 {
+        font-family: 'Century Gothic', 'Segoe UI', sans-serif !important;
+        color: #F8F9FA !important;
+    }
+    
+    h1, h2, h3, h4 {
+        font-weight: bold !important;
+        letter-spacing: 1px !important;
+    }
+    
+    .monopoly-title {
+        color: #48CAE4 !important;
+        text-shadow: 2px 2px #000000 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -74,24 +84,24 @@ GROUP_DATA = {
     "Group 8": {"brand": "Pacific Pacific", "duration": "29-Day Deep Wilderness Expedition", "theme": "Diving, Coral Reefs & Sea Nature", "market": "ASIAN", "map": "Yokohama (Japan) ➔ North Pacific ➔ Keelung (Taiwan)"}
 }
 
-# --- PHASE 0: GAME REGISTRATION LAUNCHPAD ---
+# --- PHASE 0: GAME REGISTRATION SETUP HUB ---
 if st.session_state.phase == 0:
-    st.markdown("<h1>🚢 CRUISE BOARDROOM MONOPOLY</h1>", unsafe_allow_html=True)
-    st.write("Welcome onboard corporate cruise manager. Setup your company registry profiles to acquire your assets.")
+    st.markdown("<h1 class='monopoly-title'>🚢 CRUISE SHIP BOARDROOM MONOPOLY</h1>", unsafe_allow_html=True)
+    st.write("Welcome onboard corporate cruise manager. Setup your company registry portfolio to lock your assets.")
     
     group_choice = st.selectbox("Select Your Board Group Portfolio (1-8):", list(GROUP_DATA.keys()))
     cfg = GROUP_DATA[group_choice]
     
-    st.markdown("<div class='game-card'>", unsafe_allow_html=True)
-    st.subheader("📋 Locked Vessel Registry Profile")
+    st.markdown("<div class='board-card-left'>", unsafe_allow_html=True)
+    st.subheader("📋 Locked Vessel Asset Deed Summary")
     st.text_input("Group Portfolio:", value=group_choice, disabled=True)
     st.text_input("Vessel Ship Identity:", value=f"{cfg['brand']}", disabled=True)
-    st.text_input("Theme Focus:", value=cfg['theme'], disabled=True)
+    st.text_input("Theme Attraction Focus:", value=cfg['theme'], disabled=True)
     st.text_input("Target Demographic Demands:", value=f"{cfg['market']} Market Segment", disabled=True)
     st.text_input("Itinerary Coordinate Route Track:", value=cfg['map'], disabled=True)
     st.markdown("</div>", unsafe_allow_html=True)
     
-    if st.button("🚀 Register Assets & Launch Voyage", type="primary", use_container_width=True):
+    if st.button("🚀 Confirm Asset Deed & Launch Voyage", type="primary", use_container_width=True):
         st.session_state.group = group_choice
         st.session_state.brand = cfg['brand']
         st.session_state.days = cfg['duration']
@@ -101,30 +111,30 @@ if st.session_state.phase == 0:
         st.session_state.phase = 1
         st.rerun()
 
-# --- PHASE 1 - 5: THE INTERACTIVE MONOPOLY EVENT TERMINAL ---
+# --- PHASE 1 - 5: THE INTERACTIVE BOARDROOM INTERACTIVE DECISION MATRIX ---
 elif 1 <= st.session_state.phase <= 5:
     is_asian = st.session_state.market == "ASIAN"
     
-    # 1. Fixed Global Corporate Scoreboard Row
-    st.markdown(f"<h2>📊 Live Operations Scoreboard | {st.session_state.group}</h2>", unsafe_allow_html=True)
+    # 1. Permanent Top Navigation Scoreboard Status
+    st.markdown(f"<h2>📊 Assets Scoreboard | {st.session_state.group} Profile</h2>", unsafe_allow_html=True)
     m_col1, m_col2, m_col3, m_col4 = st.columns(4)
     with m_col1: st.metric("💰 Cash Balance Reserves", f"${st.session_state.cash:,}")
-    with m_col2: st.metric("👥 Active Onboard Pax", f"{st.session_state.passengers:,} Pax")
+    with m_col2: st.metric("👥 Active Onboard Passengers", f"{st.session_state.passengers:,} Pax")
     with m_col3: st.metric("🏥 Total Injuries Logged", f"{st.session_state.injured} Case")
     with m_col4: st.metric("💀 Total Onboard Casualties", f"{st.session_state.dead} Dead")
     st.markdown("---")
     
-    # 2. Hard-coded Side-by-Side Panel Separation Structure
+    # 2. Enforced Side-by-Side Column Matrix Framework to fix missing panels
     col_left, col_right = st.columns([3, 2])
     
     with col_left:
-        st.markdown(f"<h3>🎲 Boardroom Decision Round {st.session_state.phase} / 5</h3>", unsafe_allow_html=True)
+        st.markdown(f"<h3>🎲 Monopoly Round Card: {st.session_state.phase} / 5</h3>", unsafe_allow_html=True)
         
-        # Load precise balancing scenario matrices cleanly
+        # Statically define all scenario numbers to completely eliminate dynamic calculation rendering blocks
         if st.session_state.phase == 1:
             title, emoji = "WEATHER HAZARD: Tropical Storm Path Encounter", "⛈️"
             desc = "A severe meteorological anomaly intersects your primary tracking channel map grids."
-            o1_text = "Navigate Safety Detour around tracking block. (Cost: -$15,000 | Injuries: +0 | Casualties: +0)"
+            o1_text = "Safety Detour around tracking block. (Cost: -$15,000 | Injuries: +0 | Casualties: +0)"
             o2_text = "Throttling full engine velocity across edge coordinates. (Cost: -$12,000 | Injuries: +140 | Casualties: +0)" if is_asian else "Throttling full engine velocity across edge coordinates. (Cost: -$11,000 | Injuries: +155 | Casualties: +1)"
             m1, i1, d1 = -15000, 0, 0
             m2 = -12000 if is_asian else -11000
@@ -153,9 +163,3 @@ elif 1 <= st.session_state.phase <= 5:
 
         elif st.session_state.phase == 4:
             title, emoji = "ECOLOGICAL COMPLIANCE: Minor Bilge Fuel Seepage", "🛢️"
-            desc = "A hull valve pressure line registers a slow residue release near a preservation marine park zone."
-            o1_text = "Initiate offshore operational repair stop. (Cost: -$19,000 | Injuries: +0 | Casualties: +0)"
-            o2_text = "Bypass alerts quietly to maintain arrival window. (Cost: -$17,500 | Injuries: +90 | Casualties: +0)" if is_asian else "Bypass alerts quietly to maintain arrival window. (Cost: -$16,000 | Injuries: +110 | Casualties: +3)"
-            m1, i1, d1 = -19000, 0, 0
-            m2 = -17500 if is_asian else -16000
-            i2 = 90 if is_asian else 110
