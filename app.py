@@ -35,6 +35,8 @@ if s['phase'] == 0:
     st.info("💡 Your ship setup is auto-locked based on your Group Number to prevent copying!")
     
     group_choice = st.selectbox("Select Your Group Number (1-8):", ["Group 1", "Group 2", "Group 3", "Group 4", "Group 5", "Group 6", "Group 7", "Group 8"])
+    
+    # Safe index parsing based on strings
     g_idx = 0
     if "2" in group_choice: g_idx = 1
     elif "3" in group_choice: g_idx = 2
@@ -50,7 +52,6 @@ if s['phase'] == 0:
     routes = ["Miami ➔ Cozumel", "Seattle ➔ Juneau", "Barcelona ➔ Marseille", "Singapore ➔ Phuket", "Sydney ➔ Auckland", "Hong Kong ➔ Okinawa", "Copenhagen ➔ Helsinki", "Yokohama ➔ Keelung"]
     markets = ["WESTERN Customers (Spends big money at bars/alcohol, wants slow lazy holiday)", "WESTERN Customers (Big families, spends money at casino/games, wants active fun)", "WESTERN Customers (Rich premium travelers, wants expensive fine dining restaurants)", "ASIAN Customers (Big multi-generation families, wants delicious food, demands 'Safety First' layout)", "WESTERN Customers (Adventure travelers, loves outdoor day tours at ports)", "ASIAN Customers (Hong Kong high-end rich shoppers, hates any time delays)", "WESTERN Customers (Older university alumni groups, wants quiet academic study lectures)", "ASIAN Market (Singapore fly-cruise segment, active wildlife/photography focus)"]
 
-    # Text-Based Maps for students to visualize the route
     maps = [
         "[Miami, USA] ======= (Sailing Caribbean Sea) =======> [Cozumel, MEXICO]",
         "[Seattle, USA] ======= (Sailing Gulf of Alaska) =======> [Juneau, Alaska]",
@@ -71,7 +72,6 @@ if s['phase'] == 0:
     c2.text_input("Sailing Route Port:", value=s['route'], disabled=True)
     c2.text_input("Cruise Main Activity Focus:", value=s['theme'], disabled=True)
     
-    # Showcase the geographic itinerary map box
     st.markdown("### 🗺️ Geographic Itinerary Route Map:")
     st.code(maps[g_idx], language="text")
 
@@ -121,7 +121,7 @@ elif 1 <= s['phase'] <= 3:
                 {
                     "title": "BIG BUSINESS OPPORTUNITY: Shopping Gala Offer", 
                     "desc": "A luxury retail company requests to lease public decks tonight for a VIP shopping party.", 
-                    "h": "Fleet Charter data. Asian routes generate massive net auxiliary margins from luxury spending over casual Western itineraries.", 
+                    "h": "Fleet Charter data. Asian routes generate massive net auxiliary margins from duty-free luxury spending over casual Western itineraries.", 
                     "emoji": "💎 💰 🎰", 
                     "o1": "Accept VIP contract. (Asian shopping surges net revenues by +$35,000; Western assets capture +$20,000)", 
                     "o2": "Decline deal to keep public transit spaces free. (Yields $0 cash injection)", 
@@ -153,3 +153,4 @@ elif 1 <= s['phase'] <= 3:
             st.success(f"👉 **Option 2:** {c['o2']}")
             
             if st.button("🔴 Choose Option 1", use_container_width=True):
+                s['cash'] += c['m1']; s['injured'] += c['i1']; s['dead'] += c['d1']
