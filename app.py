@@ -126,8 +126,10 @@ elif 1 <= st.session_state.phase <= 3:
                 st.session_state.injured += chosen_injury
                 st.session_state.dead += chosen_death
                 
-                # Separate out log dictionary elements cleanly to fix syntax parameters
-                log_entry = {
-                    "round": int(st.session_state.phase),
-                    "title": str(c['title']),
-                    "choice_made": str(user_choice),
+                # 完全移除大括號字典格式，改用最安全的純 List 方式儲存
+                log_entry = [
+                    st.session_state.phase,
+                    c['title'],
+                    user_choice,
+                    chosen_text,
+                    chosen_cost,
